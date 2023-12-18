@@ -26,5 +26,22 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE)
   })
 
+  // 路由守护(登录路由守护)
+  Router.beforeEach((to, from, next) => {
+    if (localStorage.getItem('jwt') != null) {
+      if (to.path === '/login') {
+        next('/')
+      } else {
+        next()
+      }
+    } else {
+      if (to.path === '/login') {
+        next()
+      } else {
+        next('/login')
+      }
+    }
+  })
+
   return Router
 })
