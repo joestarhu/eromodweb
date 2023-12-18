@@ -1,24 +1,23 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          Quasar App
+          EROMOD
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-avatar size="40px">
+          <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+        </q-avatar>
+        <q-btn @click="logout" dense flat>{{ $t("logout") }}</q-btn>
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label header>
-          Essential Links
-        </q-item-label>
-
-        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+        <dm_menu v-for="obj in data" :key="obj" v-bind="obj"></dm_menu>
       </q-list>
     </q-drawer>
 
@@ -30,69 +29,44 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
+import { useRouter } from 'vue-router'
+import dm_menu from 'components/dmMenu.vue'
 
 export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    EssentialLink
+    dm_menu,
   },
 
   setup() {
+    const $router = useRouter()
     const leftDrawerOpen = ref(false)
+    const data = [
+      {
+        title: '统一用户中心服务', children: [
+          { title: '用户管理', to: '/user', icon: 'person' },
+          // { title: '组织管理', to: '/org', icon: 'lan' },
+          // { title: '角色管理', to: '/role', icon: 'group' },
+          // { title: '租户管理', to: '/tenant', icon: 'tenant' },
+        ]
+      }
+    ]
+
+    function logout() {
+      localStorage.removeItem('jwt')
+      $router.push('/login')
+    }
+
 
     return {
-      essentialLinks: linksList,
+      data,
       leftDrawerOpen,
+      logout,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
+
     }
   }
 })
