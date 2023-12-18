@@ -26,7 +26,8 @@
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar';
-import { DMOBJ } from 'src/boot/dm'
+import { DMOBJ } from 'src/boot/dm';
+import { encryptString } from 'src/boot/security';
 
 
 export default defineComponent({
@@ -41,14 +42,12 @@ export default defineComponent({
         })
 
         async function login() {
-            // let encrypt_str = encryptString(data.value.passwd.value)
-            // let rsp = await dm.post('/user/login', { acct: data.value.acct.value, passwd: encrypt_str })
-            // if (rsp.data.code == 0) {
-            //     localStorage.setItem('jwt', rsp.data.data['jwt'])
-            //     $router.push('/')
-            // }
-            localStorage.setItem('jwt', 'dummy-jwt')
-            $router.push('/')
+            let encrypt_str = encryptString(data.value.passwd.value)
+            let rsp = await dm.post('/user/login', { acct: data.value.acct.value, passwd: encrypt_str })
+            if (rsp.data.code == 0) {
+                localStorage.setItem('jwt', rsp.data.data['jwt'])
+                $router.push('/')
+            }
         }
 
         return {
