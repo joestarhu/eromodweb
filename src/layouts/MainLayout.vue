@@ -8,10 +8,18 @@
           EROMOD
         </q-toolbar-title>
 
-        <q-avatar size="40px">
+        <q-avatar class="dm-avatar">
           <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+          <q-popup-proxy>
+            <q-list dense>
+              <q-item clickable v-close-popup @click="logout">
+                <q-item-section>
+                  <q-item-label>{{ $t("logout") }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-popup-proxy>
         </q-avatar>
-        <q-btn @click="logout" dense flat>{{ $t("logout") }}</q-btn>
       </q-toolbar>
     </q-header>
 
@@ -71,3 +79,12 @@ export default defineComponent({
   }
 })
 </script>
+
+
+<style scoped>
+.dm-avatar {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+</style>
