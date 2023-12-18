@@ -12,6 +12,18 @@ const api = axios.create({
   timeout: 10000,
 })
 
+
+// 请求拦截器,自动带上header信息
+api.interceptors.request.use(
+  config => {
+    config.headers.Authorization = 'Bearer ' + localStorage.getItem('jwt')
+    return config;
+  },
+  err => {
+    return Promise.reject(err);
+  }
+)
+
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 

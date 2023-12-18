@@ -69,4 +69,43 @@ class DMOBJ {
 
 
 
-export { DMOBJ }
+// 
+function showOptLabel(value, opts) {
+    for (let obj of opts) {
+        if (obj.value === value) {
+            return obj.label
+        }
+    }
+    return ''
+}
+
+// dmTbl控件的一些公共参数
+function setTblCol(field, label, options = null, name = '', align = 'left') {
+    let format = val => { return val }
+    if (!name) {
+        name = field
+    }
+
+    if (options) {
+        format = val => {
+            return showOptLabel(val, options)
+        }
+    }
+    return { field: field, name: name, label: label, align: align, format: format }
+}
+
+
+
+const DMTBL = {
+    col: setTblCol,
+}
+
+
+const DMOPTS = {
+    userStatus: [{ label: '启用', value: 1 }, { label: '停用', value: 0 },],
+}
+
+
+
+
+export { DMOBJ, DMTBL, DMOPTS }
