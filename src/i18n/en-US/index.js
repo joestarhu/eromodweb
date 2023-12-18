@@ -6,4 +6,5 @@ export default {
   success: 'Action was successful',
   login: 'login',
   logout: 'logout',
+  create: 'create',
 }

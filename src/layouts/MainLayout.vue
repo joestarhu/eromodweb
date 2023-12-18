@@ -46,7 +46,7 @@ export default defineComponent({
       {
         title: '统一用户中心服务', children: [
           { title: '用户管理', to: '/user', icon: 'person' },
-          // { title: '组织管理', to: '/org', icon: 'lan' },
+          { title: '组织管理', to: '/org', icon: 'lan' },
           // { title: '角色管理', to: '/role', icon: 'group' },
           // { title: '租户管理', to: '/tenant', icon: 'tenant' },
         ]

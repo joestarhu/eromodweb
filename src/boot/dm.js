@@ -94,10 +94,30 @@ function setTblCol(field, label, options = null, name = '', align = 'left') {
     return { field: field, name: name, label: label, align: align, format: format }
 }
 
-
-
 const DMTBL = {
     col: setTblCol,
+    btn: (field = 'id', label = '操作', align = 'right') => {
+        return setTblCol(field, label, null, 'btns', align)
+    },
+}
+
+
+const DMBTN = {
+    delete: { id: 0, label: '删除', color: 'negative' },
+    create: { id: 1, label: '新增', color: 'primary' },
+    edit: { id: 2, label: '修改', color: 'primary' },
+    confrim: { id: 3, label: '确认', color: 'primary' },
+}
+
+const DMINPUT = {
+    query: (params) => {
+        let base = { filled: true, debounce: 500, dense: true, clearable: true }
+        return { ...base, ...params }
+    },
+    input: (params) => {
+        let base = { filled: true, "lazy-rules": true, hint: '' }
+        return { ...base, ...params }
+    },
 }
 
 
@@ -108,4 +128,4 @@ const DMOPTS = {
 
 
 
-export { DMOBJ, DMTBL, DMOPTS }
+export { DMOBJ, DMTBL, DMBTN, DMINPUT, DMOPTS }
