@@ -168,6 +168,7 @@ export default defineComponent({
                             url = '/user/update'
                             data = {
                                 id: actInput.id.value,
+                                acct: actInput.acct.value,
                                 nick_name: actInput.nick_name.value,
                                 real_name: actInput.real_name.value,
                                 phone: actInput.phone.value,
