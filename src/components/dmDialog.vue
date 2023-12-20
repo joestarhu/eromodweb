@@ -33,7 +33,7 @@
 <script>
 import { defineComponent } from 'vue';
 export default defineComponent({
-    name: 'dm-dialog',
+    name: 'dm_dialog',
     emits: ['submit'],
     props: {
         title: {
