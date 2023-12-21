@@ -7,4 +7,6 @@ export default {
   login: 'login',
   logout: 'logout',
   create: 'create',
+  add: 'add',
+  remove: 'remove'
 }

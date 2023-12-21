@@ -5,8 +5,15 @@ const MSG_OK_OPTS = { ...MSG_BASE_OPTS, type: 'positive' }
 const MSG_NG_OPTS = { ...MSG_BASE_OPTS, type: 'negative' }
 
 class DMOBJ {
-    constructor(quasarObj) {
+    constructor(quasarObj, routerObj) {
         this.obj = quasarObj
+        this.router = routerObj
+    }
+
+    logout() {
+        // 通用退出操作
+        localStorage.removeItem('jwt')
+        this.router.push('/login')
     }
 
     msgOK(opts) {
@@ -38,6 +45,7 @@ class DMOBJ {
         switch (err.response.status) {
             case 401:
                 this.msgNG({ message: '用户未授权认证,请重新登录' })
+                this.logout()
                 break;
             default:
                 this.msgNG({ message: '请求服务失败,请稍后重试', caption: err.message })
@@ -50,7 +58,7 @@ class DMOBJ {
             let rsp = await api.post(url, data)
             return this.apiOK(rsp)
         } catch (err) {
-            this.apiNG(err)
+            return this.apiNG(err)
         }
     }
 
@@ -62,14 +70,9 @@ class DMOBJ {
             this.apiNG(err)
         }
     }
-
-
-
 }
 
 
-
-// 
 function showOptLabel(value, opts) {
     for (let obj of opts) {
         if (obj.value === value) {
@@ -115,7 +118,7 @@ const DMINPUT = {
         return { ...base, ...params }
     },
     input: (params) => {
-        let base = { filled: true, "lazy-rules": true, hint: '' }
+        let base = { filled: true, "lazy-rules": true, hint: '', dense: true }
         return { ...base, ...params }
     },
 }

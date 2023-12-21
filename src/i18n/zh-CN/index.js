@@ -7,4 +7,6 @@ export default {
     login: '登录',
     logout: '退出登录',
     create: '新增',
+    add: '添加',
+    remove: '移除',
 }
