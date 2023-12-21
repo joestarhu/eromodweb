@@ -2,9 +2,9 @@
   <q-layout view="hHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <!-- <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" /> -->
 
-        <q-toolbar-title>
+        <q-toolbar-title class="text-bold">
           EROMOD
         </q-toolbar-title>
 
@@ -37,8 +37,11 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
+import { DMOBJ } from 'src/boot/dm'
 import dm_menu from 'components/dmMenu.vue'
+
 
 export default defineComponent({
   name: 'MainLayout',
@@ -48,22 +51,21 @@ export default defineComponent({
   },
 
   setup() {
-    const $router = useRouter()
+    const dm = new DMOBJ(useQuasar(), useRouter())
     const leftDrawerOpen = ref(false)
     const data = [
       {
         title: '统一用户中心服务', children: [
-          { title: '用户管理', to: '/user', icon: 'person' },
-          { title: '组织管理', to: '/org', icon: 'lan' },
-          // { title: '角色管理', to: '/role', icon: 'group' },
-          // { title: '租户管理', to: '/tenant', icon: 'tenant' },
+          { title: '用户管理', to: '/user', icon: 'account_box' },
+          { title: '组织管理', to: '/org', icon: 'account_tree' },
+          { title: '角色管理', to: '/role', icon: 'label' },
+          { title: '服务管理', to: '/service', icon: 'pix' },
         ]
       }
     ]
 
     function logout() {
-      localStorage.removeItem('jwt')
-      $router.push('/login')
+      dm.logout()
     }
 
 

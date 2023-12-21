@@ -1,23 +1,19 @@
 <template>
-    <q-page>
-        <q-card flat>
-            <q-card-section class="row q-gutter-xs">
-                <div class="col q-gutter-xs" v-for="obj in queryInput" :key="obj">
-                    <dm_input :qProps="obj" :dmType="obj.dmType" v-model="obj.value"
-                        @update:model-value="getList(tbl.pagination)"></dm_input>
-                </div>
-                <div class="col row reverse">
-                    <q-btn color="primary" @click="btnClick(DMBTN.create.id)">{{ $t("create") }}</q-btn>
-                </div>
-            </q-card-section>
+    <q-page padding class="q-gutter-md">
+        <div class="row q-gutter-xs">
+            <div class="col" v-for="obj in queryInput" :key="obj">
+                <dm_input :qProps="obj" :dmType="obj.dmType" v-model="obj.value"
+                    @update:model-value="getList(tbl.pagination)"></dm_input>
+            </div>
+            <div class="col row reverse">
+                <q-btn color="primary" @click="btnClick(DMBTN.create.id)">{{ $t("create") }}</q-btn>
+            </div>
+        </div>
+        <div class="q-gutter-xs">
+            <dm_tbl :qProps="tbl" :dmBtn="dmBtn" @query="getList" @btnClick="btnClick"></dm_tbl>
+        </div>
 
-            <q-card-section class="column q-gutter-xs">
-                <dm_tbl :qProps="tbl" :dmBtn="dmBtn" @query="getList" @btnClick="btnClick"></dm_tbl>
-            </q-card-section>
-        </q-card>
-
-
-        <q-dialog presistent v-model="actPnl.show">
+        <q-dialog persistent v-model="actPnl.show">
             <dm_dialog class="dm-detail" :title="actPnl.type" @submit="btnClick(DMBTN.confrim.id)">
                 <div v-if="actPnl.type == actType.create || actPnl.type == actType.update">
                     <dm_input v-for=" obj of actInput" :key="obj" :qProps="obj" :dmType="obj.dmType" v-model="obj.value" />
@@ -33,6 +29,7 @@
 
 <script>
 import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
 import { defineComponent, ref } from 'vue';
 import { DMOBJ, DMTBL, DMBTN, DMINPUT, DMOPTS } from 'src/boot/dm';
 import dm_input from 'src/components/dmInput.vue';
@@ -48,7 +45,7 @@ export default defineComponent({
     },
 
     setup() {
-        const dm = new DMOBJ(useQuasar())
+        const dm = new DMOBJ(useQuasar(), useRouter())
         const modelUser = {
             id: { label: 'ID' },
             acct: { label: '账号', maxlength: 32 },
@@ -196,7 +193,7 @@ export default defineComponent({
         async function postData(url, data, message) {
             let rsp = await dm.post(url, data)
 
-            if (rsp.data.code == 0) {
+            if (rsp && rsp.data.code == 0) {
                 dm.msgOK({ message: message })
                 actPnl.value.show = false
                 getList(tbl.value.pagination)
@@ -218,14 +215,17 @@ export default defineComponent({
                 status: queryInput.status.value,
             })
 
-            tbl.value.rows = rsp.data.data.records
-            pagination.rowsNumber = rsp.data.data.pagination.total
+            if (rsp && rsp.data.code == 0) {
+                tbl.value.rows = rsp.data.data.records
+                pagination.rowsNumber = rsp.data.data.pagination.total
+            }
+
         }
 
         // 获取详情数据
         async function getDetail() {
             let rsp = await dm.get('/user/detail', { id: actPnl.value.data.id })
-            if (rsp.data.code == 0) {
+            if (rsp && rsp.data.code == 0) {
                 actPnl.value.show = true
                 let rspData = rsp.data.data
                 for (let obj in actInput) {
