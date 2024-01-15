@@ -144,7 +144,7 @@ export default defineComponent({
             status: DMINPUT.input({ ...modelUser.status, dmType: 'select', value: 1 })
         }
 
-        async function btnClick(id, prop) {
+        function btnClick(id, prop) {
             let obj = actPnl.value
             obj.show = true
             obj.loading = true
@@ -158,7 +158,7 @@ export default defineComponent({
                     break;
                 case DMBTN.edit.id:
                     obj.type = actType.update
-                    await getDetail(prop.row.id)
+                    getDetail(prop.row.id)
                     break;
                 case DMBTN.delete.id:
                     obj.type = actType.delete

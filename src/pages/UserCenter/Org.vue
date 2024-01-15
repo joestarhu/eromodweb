@@ -101,6 +101,7 @@ export default defineComponent({
             dept: '部门信息',
             delete: '删除组织',
         }
+
         const actPnl = ref({
             show: false,
             type: actType.create,
@@ -109,18 +110,16 @@ export default defineComponent({
         })
 
         const dept = ref([
-            { id: 1, name: 'Eromode', lazy: true, },
+            { id: 1, name: 'EromodeXYZ', lazy: true, },
         ])
 
         const selected_dept = ref(1)
-
 
         const actInput = {
             id: DMINPUT.input({ ...modelOrg.id, value: '', readonly: true, placeholder: '系统自动生成', 'stack-label': true }),
             name: DMINPUT.input({ ...modelOrg.name, value: '', rules: [val => val && val.length > 0 || '请输入'] }),
             remark: DMINPUT.input({ ...modelOrg.remark, type: "textarea" }),
         }
-
 
         const tbl = ref({
             columns: [
@@ -140,25 +139,27 @@ export default defineComponent({
         ]
 
         function btnClick(id, props) {
+            let obj = actPnl.value
+            obj.show = true
+            obj.loading = true
+
             switch (id) {
                 case DMBTN.create.id:
-                    actPnl.value.show = true
-                    actPnl.value.type = actType.create
-                    actPnl.value.loading = false
-                    for (let obj in actInput) {
-                        actInput[obj].value = null
+                    obj.type = actType.create
+                    obj.loading = false
+                    for (let key in actInput) {
+                        actInput[key].value = ''
                     }
                     break;
                 case DMBTN.edit.id:
-                    actPnl.value.type = actType.update
+                    obj.type = actType.update
                     getDetail(props.row.id)
                     break;
                 case DMBTN.dept.id:
-                    actPnl.value.show = true
-                    actPnl.value.type = actType.dept
+                    obj.type = actType.dept
+                    obj.loading = false
                     break;
                 case DMBTN.confrim.id:
-                    actPnl.value.loading = true
                     let url = ''
                     let message = ''
                     let data = ''
@@ -183,14 +184,11 @@ export default defineComponent({
 
 
         async function postData(url, data, message) {
-            let rsp = await dm.post(url, data)
-
-            if (rsp && rsp.data.code == 0) {
+            dm.post(url, data, (rsp) => {
                 dm.msgOK({ message: message })
                 actPnl.value.show = false
-                actPnl.value.loading = false
                 getList(tbl.value.pagination)
-            }
+            })
         }
 
         // 获取列表数据
@@ -210,39 +208,23 @@ export default defineComponent({
         }
 
         async function getDetail(org_id) {
-            let rsp = await dm.get('/org/detail', {
-                id: org_id
+            await dm.get('/org/detail', { id: org_id }, (rsp) => {
+                actInput.id.value = rsp.data.id
+                actInput.name.value = rsp.data.name
+                actInput.remark.value = rsp.data.remark
             })
-
-            if (rsp && rsp.data.code == 0) {
-                actPnl.value.show = true
-                actInput.id.value = rsp.data.data.id
-                actInput.name.value = rsp.data.data.name
-                actInput.remark.value = rsp.data.data.remark
-            }
+            actPnl.value.loading = false
         }
 
 
         async function lazyLoad({ node, key, done, fail }) {
             let val = []
-
             await dm.get('/org/children', { id: key }, (rsp) => {
                 val = rsp.data
                 val = val.map(item => ({
                     ...item, lazy: true
                 }))
             })
-
-
-
-            let rsp = await dm.get('/org/children', { id: key })
-            if (rsp && rsp.data.code == 0) {
-                val = rsp.data.data
-                // lazy:true追加
-                val = val.map(item => ({
-                    ...item, lazy: true
-                }))
-            }
             done(val)
         }
 
