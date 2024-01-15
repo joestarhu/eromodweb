@@ -82,15 +82,12 @@ export default defineComponent({
 
 
     async function get_user_info() {
-      let rsp = await dm.get('/user/login_user')
-      let data = rsp.data.data
-      if (rsp.data.code == 0) {
-        userInfo.value.nick_name = data['nick_name']
-        if (data['avatar'] != '') {
-          userInfo.value.avatar = data['avatar']
+      await dm.get('/user/login_user', null, (rsp) => {
+        userInfo.value.nick_name = rsp.data['nick_name']
+        if (rsp.data['avatar'] != '') {
+          userInfo.value.avatar = rsp.data['avatar']
         }
-
-      }
+      })
     }
 
 

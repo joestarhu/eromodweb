@@ -4,6 +4,17 @@ const MSG_BASE_OPTS = { timeout: 1500, position: 'top' }
 const MSG_OK_OPTS = { ...MSG_BASE_OPTS, type: 'positive' }
 const MSG_NG_OPTS = { ...MSG_BASE_OPTS, type: 'negative' }
 
+
+class DataModel {
+    constructor(label, type, maxlength, options,) {
+        this.label = label
+        this.type = type
+        this.maxlength = maxlength
+        this.options = options
+    }
+}
+
+
 class DMOBJ {
     constructor(quasarObj, routerObj) {
         this.obj = quasarObj
@@ -26,13 +37,14 @@ class DMOBJ {
         this.obj.notify({ ...MSG_NG_OPTS, ...opts })
     }
 
-    apiOK(rsp) {
+    apiOK(rsp, cb_func) {
         // api请求成功,200的处理
-        if (rsp.data.code != 0) {
+        if (rsp.data.code == 0) {
+            cb_func(rsp.data)
+        } else {
             // 业务处理失败,通知提醒
             this.msgNG({ message: rsp.data.message })
         }
-        return rsp
     }
 
     apiNG(err) {
@@ -53,19 +65,19 @@ class DMOBJ {
         }
     }
 
-    async post(url, data, params = null) {
+    async post(url, data, cb_func = null) {
         try {
             let rsp = await api.post(url, data)
-            return this.apiOK(rsp)
+            this.apiOK(rsp, cb_func)
         } catch (err) {
-            return this.apiNG(err)
+            this.apiNG(err)
         }
     }
 
-    async get(url, params) {
+    async get(url, params, cb_func = null) {
         try {
             let rsp = await api.get(url, { params: params })
-            return this.apiOK(rsp)
+            this.apiOK(rsp, cb_func)
         } catch (err) {
             this.apiNG(err)
         }
@@ -110,6 +122,9 @@ const DMBTN = {
     create: { id: 1, label: '新增', color: 'primary' },
     edit: { id: 2, label: '修改', color: 'primary' },
     confrim: { id: 3, label: '确认', color: 'primary' },
+    org: { id: 4, label: '组织', color: 'primary' },
+    role: { id: 5, label: '角色', color: 'primary' },
+    dept: { id: 6, label: '部门', color: 'primary' },
 }
 
 const DMINPUT = {
