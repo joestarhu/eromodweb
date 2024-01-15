@@ -66,6 +66,6 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     /* background-image: linear-gradient(180deg, #3b41c5 0%, #a981bb 49%, #ffc8a9 100%) */
-    background-image: linear-gradient(0deg, #a8edea 0%, #fed6e3 100%)
+    background-image: linear-gradient(180deg, #a8edea 0%, #fed6e3 100%)
 }
 </style>

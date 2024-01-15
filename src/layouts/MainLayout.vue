@@ -9,9 +9,17 @@
         </q-toolbar-title>
 
         <q-avatar class="dm-avatar">
-          <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+          <img :src=userInfo.avatar />
           <q-popup-proxy>
             <q-list dense>
+
+              <q-item clickable>
+                <q-item-section>
+                  <span>{{ userInfo.nick_name }}</span>
+                </q-item-section>
+              </q-item>
+              <q-separator />
+
               <q-item clickable v-close-popup @click="logout">
                 <q-item-section>
                   <q-item-label>{{ $t("logout") }}</q-item-label>
@@ -36,7 +44,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { DMOBJ } from 'src/boot/dm'
@@ -53,6 +61,10 @@ export default defineComponent({
   setup() {
     const dm = new DMOBJ(useQuasar(), useRouter())
     const leftDrawerOpen = ref(false)
+    const userInfo = ref({
+      nick_name: '获取用户名失败',
+      avatar: 'https://cdn.quasar.dev/img/avatar4.jpg',
+    })
     const data = [
       {
         title: '统一用户中心服务', children: [
@@ -69,9 +81,28 @@ export default defineComponent({
     }
 
 
+    async function get_user_info() {
+      let rsp = await dm.get('/user/login_user')
+      let data = rsp.data.data
+      if (rsp.data.code == 0) {
+        userInfo.value.nick_name = data['nick_name']
+        if (data['avatar'] != '') {
+          userInfo.value.avatar = data['avatar']
+        }
+
+      }
+    }
+
+
+    onMounted(() => {
+      get_user_info()
+    })
+
+
     return {
       data,
       leftDrawerOpen,
+      userInfo,
       logout,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
