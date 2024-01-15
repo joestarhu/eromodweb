@@ -9,4 +9,6 @@ export default {
     create: '新增',
     add: '添加',
     remove: '移除',
+    cancel: '取消',
+    save: '确认',
 }

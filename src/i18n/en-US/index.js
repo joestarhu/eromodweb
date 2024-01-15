@@ -4,9 +4,11 @@
 export default {
   failed: 'Action failed',
   success: 'Action was successful',
-  login: 'login',
-  logout: 'logout',
-  create: 'create',
-  add: 'add',
-  remove: 'remove'
+  login: 'Login',
+  logout: 'Logout',
+  create: 'Create',
+  add: 'Add',
+  remove: 'Remove',
+  cancel: 'Cancel',
+  save: 'Save',
 }
