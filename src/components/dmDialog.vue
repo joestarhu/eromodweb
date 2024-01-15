@@ -11,7 +11,7 @@
             </div>
         </q-card-section>
 
-        <q-form @submit="submit">
+        <q-form @submit="submit" v-if="loading == false">
             <q-card-section>
                 <slot></slot>
             </q-card-section>
@@ -25,6 +25,7 @@
                 </div>
             </q-card-section>
         </q-form>
+        <q-inner-loading :showing="loading" label="Please wait..." label-class="text-teal" label-style="font-size: 1.1em" />
     </q-card>
 </template>
 
@@ -42,7 +43,11 @@ export default defineComponent({
         showAct: {
             type: Boolean,
             default: true,
-        }
+        },
+        loading: {
+            type: Boolean,
+            default: true,
+        },
     },
     setup(props, ctx) {
         function submit() {
