@@ -16,14 +16,13 @@
                 <slot></slot>
             </q-card-section>
 
-            <q-card-section class="row">
+            <q-card-section class="row" v-if="showAct == true">
                 <div class="col">
                 </div>
                 <div class="col row reverse q-gutter-sm">
-                    <q-btn color="primary" type="submit">确定</q-btn>
-                    <q-btn v-close-popup>取消</q-btn>
+                    <q-btn color="primary" type="submit">{{ $t('save') }}</q-btn>
+                    <q-btn v-close-popup>{{ $t('cancel') }}</q-btn>
                 </div>
-
             </q-card-section>
         </q-form>
     </q-card>
@@ -40,6 +39,10 @@ export default defineComponent({
             type: String,
             default: '标题',
         },
+        showAct: {
+            type: Boolean,
+            default: true,
+        }
     },
     setup(props, ctx) {
         function submit() {
