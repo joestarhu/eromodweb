@@ -1,77 +1,87 @@
 <template>
-    <q-page>
-        <q-splitter v-model="splittter">
-            <template #before>
-                <div class="q-pa-md">
-                    <div class="row">
-                        <div class="col">
-                            <q-input placeholder="输入组织名进行搜索" dense filled>
-                                <template #prepend>
-                                    <q-icon name="search"></q-icon>
-                                </template>
-                            </q-input>
-                        </div>
-                        <div class="row col reverse">
-                            <q-btn color="primary" @click="btnClick(DMBTN.create.id, null)">{{ $t("create") }}</q-btn>
-                        </div>
-                    </div>
-                    <div class="columns">
-                        <q-tree :nodes="dataOrg" node-key="id" label-key="label" v-model:selected="selected"
-                            selected-color="primary" no-selection-unset>
-                            <template #default-header="prop">
-                                <div class="row items-center" style="width:100%">
-                                    <span> {{ prop.node.label }}</span>
-                                    <q-btn dense flat icon="edit"></q-btn>
-                                    <q-btn dense flat icon="delete"></q-btn>
-                                </div>
-                            </template>
-                        </q-tree>
-                    </div>
-                </div>
-            </template>
-            <template #after>
-                <div class="q-pa-md">
-                    <div>
-                        {{ selected }}
-                        <!-- 展示所属组织下的用户信息 -->
-                    </div>
-                </div>
-            </template>
-        </q-splitter>
+    <q-page padding class="q-gutter-md">
+        <div class="row q-gutter-xs">
+            <div class="col" v-for="obj in queryInput" :key="obj">
+                <dm_input :qProps="obj" :dmType="obj.dmType" v-model="obj.value"
+                    @update:model-value="getList(tbl.pagination)"></dm_input>
+            </div>
+            <div class="col row reverse">
+                <q-btn color="primary" @click="btnClick(DMBTN.create.id, null)">{{ $t("create") }}</q-btn>
+            </div>
+        </div>
+        <div class="q-gutter-xs">
+            <dm_tbl :qProps="tbl" :dmBtn="dmBtn" @query="getList" @btnClick="btnClick"></dm_tbl>
+        </div>
 
-
-        <q-dialog v-model="actPnl.show">
-            <dm_dialog class='dm-detail' :title="actPnl.type">
-                <div class="q-gutter-sm">
-                    <q-input label="名称" dense filled></q-input>
-                    <q-select label="父节点" dense filled clearable></q-select>
-                    <q-input label="备注" type="textarea" dense filled></q-input>
-                </div>
-
+        <q-dialog v-model="actPnl.show" persistent>
+            <dm_dialog class='dm-detail' :title="actPnl.type" :showAct="false" v-if="actPnl.type != actType.dept"
+                :loading="actPnl.loading">
+                <dm_form @submit="btnClick(DMBTN.confrim.id)">
+                    <dm_input v-for=" obj of actInput" :key="obj" :qProps="obj" :dmType="obj.dmType" v-model="obj.value" />
+                </dm_form>
+            </dm_dialog>
+            <dm_dialog class='dm-dept' :title="actPnl.type" :showAct="false" :loading="actPnl.loading" v-else>
+                <q-splitter v-model="splitter">
+                    <template #before>
+                        <q-card flat>
+                            <q-card-section>
+                                <span>查询条件</span>
+                            </q-card-section>
+                            <q-card-section>
+                                <q-tree :nodes="dept" v-model:selected='selected_dept' node-key="id" label-key='name'
+                                    selected-color="primary" no-selection-unset @lazy-load="lazyLoad">
+                                    <template #default-header="prop">
+                                        <div class="col text-bold ellipsis">
+                                            {{ prop.node.name }}
+                                        </div>
+                                        <div class="col row reverse q-gutter-xs">
+                                            <q-btn rounded flat dense icon="delete"></q-btn>
+                                            <q-btn rounded flat dense icon="edit"></q-btn>
+                                            <q-btn rounded flat dense icon="add"></q-btn>
+                                        </div>
+                                    </template>
+                                </q-tree>
+                            </q-card-section>
+                        </q-card>
+                    </template>
+                    <template #after>
+                        <q-card flat>
+                            <q-card-section>
+                                query
+                            </q-card-section>
+                            <q-card-section>
+                                tbl
+                            </q-card-section>
+                        </q-card>
+                    </template>
+                </q-splitter>
             </dm_dialog>
         </q-dialog>
-
     </q-page>
 </template>
 
 
 <script>
 import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
 import { defineComponent, ref } from 'vue';
-import { DMOBJ, DMBTN } from 'src/boot/dm';
-
-// import dm_input from 'src/components/dmInput.vue';
-import dm_dialog from 'src/components/dmDialog.vue'
+import { DMOBJ, DMTBL, DMBTN, DMINPUT } from 'src/boot/dm';
+import dm_input from 'src/components/dmInput.vue';
+import dm_dialog from 'src/components/dmDialog.vue';
+import dm_tbl from 'src/components/dmTbl.vue';
+import dm_form from 'src/components/dmForm.vue';
 
 export default defineComponent({
     name: 'pOrg',
     components: {
-        // dm_input,
+        dm_form,
+        dm_input,
         dm_dialog,
+        dm_tbl,
     },
     setup() {
-        const dm = new DMOBJ(useQuasar())
-        const selected = ref('')
+        const dm = new DMOBJ(useQuasar(), useRouter())
+        const splitter = 40
 
         const modelOrg = {
             id: { label: 'ID' },
@@ -81,68 +91,177 @@ export default defineComponent({
             u_nick_name: { label: '更新人' },
         }
 
-
+        const queryInput = {
+            name: DMINPUT.query(modelOrg.name),
+        }
 
         const actType = {
-            create: '新增组织部门',
-            update: '修改组织部门',
-            delete: '删除组织部门',
+            create: '新增组织',
+            update: '修改组织',
+            dept: '部门信息',
+            delete: '删除组织',
         }
         const actPnl = ref({
             show: false,
             type: actType.create,
             data: null,
+            loading: true,
         })
 
+        const dept = ref([
+            { id: 1, name: 'Eromode', lazy: true, },
+        ])
+
+        const selected_dept = ref(1)
 
 
-        const dataOrg = [
-            {
-                id: 1,
-                label: 'EROMOD',
-                children: [
-                    { id: 2, label: '综合部' },
-                    { id: 3, label: '技术部' },
-                ]
-            },
-            {
-                id: 4,
-                label: 'EROMOD123',
-                children: [
-                    { id: 5, label: '综合部' },
-                    { id: 6, label: '技术部' },
-                ]
-            },
+        const actInput = {
+            id: DMINPUT.input({ ...modelOrg.id, value: '', readonly: true, placeholder: '系统自动生成', 'stack-label': true }),
+            name: DMINPUT.input({ ...modelOrg.name, value: '', rules: [val => val && val.length > 0 || '请输入'] }),
+            remark: DMINPUT.input({ ...modelOrg.remark, type: "textarea" }),
+        }
 
+
+        const tbl = ref({
+            columns: [
+                DMTBL.col('id', modelOrg.id.label),
+                DMTBL.col('name', modelOrg.name.label),
+                DMTBL.col('remark', modelOrg.remark.label),
+                DMTBL.col('u_dt', modelOrg.u_dt.label),
+                DMTBL.col('u_nick_name', modelOrg.u_nick_name.label,),
+                DMTBL.btn()
+            ],
+        })
+
+        const dmBtn = [
+            DMBTN.dept,
+            DMBTN.edit,
+            DMBTN.delete,
         ]
 
-        const splittter = ref(35)
-
-        function btnClick(id, data) {
+        function btnClick(id, props) {
             switch (id) {
                 case DMBTN.create.id:
                     actPnl.value.show = true
                     actPnl.value.type = actType.create
+                    actPnl.value.loading = false
+                    for (let obj in actInput) {
+                        actInput[obj].value = null
+                    }
+                    break;
+                case DMBTN.edit.id:
+                    actPnl.value.type = actType.update
+                    getDetail(props.row.id)
+                    break;
+                case DMBTN.dept.id:
+                    actPnl.value.show = true
+                    actPnl.value.type = actType.dept
+                    break;
+                case DMBTN.confrim.id:
+                    actPnl.value.loading = true
+                    let url = ''
+                    let message = ''
+                    let data = ''
+                    switch (actPnl.value.type) {
+                        case actType.create:
+                            url = '/org/create_root'
+                            message = '新增组织成功'
+                            data = {
+                                name: actInput.name.value,
+                                remark: actInput.remark.value,
+                            }
+                            break;
+                        case actType.update:
+                            break;
+                        default: break;
+                    }
+                    postData(url, data, message)
                     break;
                 default: break
             }
+        }
 
+
+        async function postData(url, data, message) {
+            let rsp = await dm.post(url, data)
+
+            if (rsp && rsp.data.code == 0) {
+                dm.msgOK({ message: message })
+                actPnl.value.show = false
+                actPnl.value.loading = false
+                getList(tbl.value.pagination)
+            }
+        }
+
+        // 获取列表数据
+        async function getList(pagination) {
+            if (!tbl.value.pagination) {
+                tbl.value.pagination = pagination
+            }
+
+            dm.get('/org/list', {
+                page_idx: pagination.page,
+                page_size: pagination.rowsPerPage,
+                name: queryInput.name.value,
+            }, (rsp) => {
+                tbl.value.rows = rsp.data.records
+                pagination.rowsNumber = rsp.data.pagination.total
+            })
+        }
+
+        async function getDetail(org_id) {
+            let rsp = await dm.get('/org/detail', {
+                id: org_id
+            })
+
+            if (rsp && rsp.data.code == 0) {
+                actPnl.value.show = true
+                actInput.id.value = rsp.data.data.id
+                actInput.name.value = rsp.data.data.name
+                actInput.remark.value = rsp.data.data.remark
+            }
+        }
+
+
+        async function lazyLoad({ node, key, done, fail }) {
+            let val = []
+
+            await dm.get('/org/children', { id: key }, (rsp) => {
+                val = rsp.data
+                val = val.map(item => ({
+                    ...item, lazy: true
+                }))
+            })
+
+
+
+            let rsp = await dm.get('/org/children', { id: key })
+            if (rsp && rsp.data.code == 0) {
+                val = rsp.data.data
+                // lazy:true追加
+                val = val.map(item => ({
+                    ...item, lazy: true
+                }))
+            }
+            done(val)
         }
 
 
 
         return {
             DMBTN,
-
+            queryInput,
             actType,
             actPnl,
-
-
-            splittter,
-            selected,
-            dataOrg,
-
+            actInput,
+            tbl,
+            dmBtn,
+            splitter,
+            dept,
+            selected_dept,
             btnClick,
+            getList,
+            lazyLoad,
 
         }
     }
@@ -152,5 +271,10 @@ export default defineComponent({
 <style scoped>
 .dm-detail {
     width: 500px;
+}
+
+.dm-dept {
+    width: 88vw;
+    height: 88vh;
 }
 </style>
