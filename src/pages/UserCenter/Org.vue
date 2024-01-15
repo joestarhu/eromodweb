@@ -16,7 +16,10 @@
         <q-dialog v-model="actPnl.show" persistent>
             <dm_dialog class='dm-detail' :title="actPnl.type" :showAct="false" v-if="actPnl.type != actType.dept"
                 :loading="actPnl.loading">
-                <dm_form @submit="btnClick(DMBTN.confrim.id)">
+                <dm_form @submit="btnClick(DMBTN.confrim.id)" v-if="actPnl.type == actType.delete">
+                    <span class="text-negative text-h6">{{ actPnl.data.name }}</span>即将被删除,删除后数据可能无法恢复
+                </dm_form>
+                <dm_form @submit="btnClick(DMBTN.confrim.id)" v-else>
                     <dm_input v-for=" obj of actInput" :key="obj" :qProps="obj" :dmType="obj.dmType" v-model="obj.value" />
                 </dm_form>
             </dm_dialog>
@@ -159,7 +162,13 @@ export default defineComponent({
                     obj.type = actType.dept
                     obj.loading = false
                     break;
+                case DMBTN.delete.id:
+                    obj.type = actType.delete
+                    obj.loading = false
+                    obj.data = props.row
+                    break;
                 case DMBTN.confrim.id:
+                    obj.loading = false
                     let url = ''
                     let message = ''
                     let data = ''
@@ -173,6 +182,13 @@ export default defineComponent({
                             }
                             break;
                         case actType.update:
+                            break;
+                        case actType.delete:
+                            url = '/org/delete_root'
+                            message = '删除组织成功'
+                            data = {
+                                id: obj.data.id
+                            }
                             break;
                         default: break;
                     }
