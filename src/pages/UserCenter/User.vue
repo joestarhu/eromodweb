@@ -1,8 +1,8 @@
 <template>
     <q-page padding class="q-gutter-md">
         <div class="row q-gutter-xs">
-            <div class="col" v-for="obj in queryInput" :key="obj">
-                <dm_input :qProps="obj" :dmType="obj.dmType" v-model="obj.value"
+            <div class="col-inline row q-gutter-xs">
+                <dm_input v-for="obj in queryInput" :key="obj" :qProps="obj" :dmType="obj.dmType" v-model="obj.value"
                     @update:model-value="getList(tbl.pagination)"></dm_input>
             </div>
             <div class="col row reverse">
@@ -86,9 +86,11 @@ export default defineComponent({
             nick_name: { label: '用户昵称', maxlength: 32 },
             real_name: { label: '用户实名', maxlength: 32 },
             phone: { label: '手机号', },
-            status: { label: '状态', options: DMOPTS.userStatus },
+            status: { label: '用户状态', options: DMOPTS.userStatus },
             u_dt: { label: '更新时间' },
-            u_nick_name: { label: '更新人' },
+            u_name: { label: '更新人' },
+            u_nick_name: { label: '更新人昵称' },
+            u_real_name: { label: '更新人实名' },
         }
 
         const queryInput = {
@@ -113,7 +115,7 @@ export default defineComponent({
                 },
                 DMTBL.col('u_dt', modelUser.u_dt.label),
                 // { ...DMTBL.col('u_dt', modelUser.u_dt.label), format: val => `${val.split("T").join(" ")}` },
-                DMTBL.col('u_nick_name', modelUser.u_nick_name.label,),
+                DMTBL.col('u_name', modelUser.u_name.label),
                 DMTBL.btn()
             ],
         })
@@ -229,7 +231,13 @@ export default defineComponent({
                 phone: queryInput.phone.value,
                 status: queryInput.status.value,
             }, (rsp) => {
+                let val = rsp.data.records
                 tbl.value.rows = rsp.data.records
+                val = val.map(item => ({
+                    // ...item, u_name: item['u_nick_name'] + '(' + item['u_real_name'] + ')'
+                    ...item, u_name: item['u_nick_name']
+                }))
+                tbl.value.rows = val
                 pagination.rowsNumber = rsp.data.pagination.total
             })
         }

@@ -2,7 +2,7 @@
     <q-layout>
         <q-page-container>
             <q-page class="flex flex-center login-bg">
-                <q-form @submit="login">
+                <q-form @submit="login" class="q-gutter-md">
                     <q-input v-bind="data.acct" v-model.trim="data.acct.value" lazy-rules>
                         <template #prepend>
                             <q-icon name="person"></q-icon>
@@ -37,17 +37,18 @@ export default defineComponent({
         const $router = useRouter()
 
         const data = ref({
-            acct: { label: '账号', value: '', rules: [val => val && val.length > 0 || '请输入账号'] },
-            passwd: { label: '密码', value: '', type: 'password', rules: [val => val && val.length > 0 || '请输入密码'] },
+            // acct: { label: '账号', value: '', rules: [val => val && val.length > 0 || '请输入'] },
+            // passwd: { label: '密码', value: '', type: 'password', rules: [val => val && val.length > 0 || '请输入'] },
+            acct: { label: '账号' },
+            passwd: { label: '密码', type: 'password' },
         })
 
-        async function login() {
+        function login() {
             let encrypt_str = encryptString(data.value.passwd.value)
-            let rsp = await dm.post('/user/login', { acct: data.value.acct.value, passwd: encrypt_str })
-            if (rsp.data.code == 0) {
-                localStorage.setItem('jwt', rsp.data.data['jwt'])
+            dm.post('/user/login', { acct: data.value.acct.value, passwd: encrypt_str }, (rsp) => {
+                localStorage.setItem('jwt', rsp.data['jwt'])
                 $router.push('/')
-            }
+            })
         }
 
         return {

@@ -1,12 +1,13 @@
 <template>
     <q-page padding class="q-gutter-md">
         <div class="row q-gutter-xs">
-            <div class="col" v-for="obj in queryInput" :key="obj">
-                <dm_input :qProps="obj" :dmType="obj.dmType" v-model="obj.value"
+            <div class="col-inline row q-gutter-xs">
+                <dm_input v-for="obj in queryInput" :key="obj" :qProps="obj" :dmType="obj.dmType" v-model="obj.value"
                     @update:model-value="getList(tbl.pagination)"></dm_input>
             </div>
             <div class="col row reverse">
-                <q-btn color="primary" @click="btnClick(DMBTN.create.id, null)">{{ $t("create") }}</q-btn>
+                <q-btn color="primary" @click="btnClick(DMBTN.create.id, null)">{{ $t("create")
+                }}</q-btn>
             </div>
         </div>
         <div class="q-gutter-xs">
@@ -68,7 +69,7 @@
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import { defineComponent, ref } from 'vue';
-import { DMOBJ, DMTBL, DMBTN, DMINPUT } from 'src/boot/dm';
+import { DMOBJ, DMTBL, DMBTN, DMINPUT, DMOPTS } from 'src/boot/dm';
 import dm_input from 'src/components/dmInput.vue';
 import dm_dialog from 'src/components/dmDialog.vue';
 import dm_tbl from 'src/components/dmTbl.vue';
@@ -88,14 +89,18 @@ export default defineComponent({
 
         const modelOrg = {
             id: { label: 'ID' },
-            name: { label: '名称', maxlength: 32 },
+            name: { label: '组织名称', maxlength: 32 },
+            owner_id: { label: '组织所有者ID', },
+            status: { label: '组织状态', options: DMOPTS.orgStatus },
             remark: { label: '备注' },
             u_dt: { label: '更新时间' },
             u_nick_name: { label: '更新人' },
+            owner_name: { label: '组织所有者' },
         }
 
         const queryInput = {
             name: DMINPUT.query(modelOrg.name),
+            status: DMINPUT.query({ ...modelOrg.status, dmType: 'select' }),
         }
 
         const actType = {
@@ -121,6 +126,8 @@ export default defineComponent({
         const actInput = {
             id: DMINPUT.input({ ...modelOrg.id, value: '', readonly: true, placeholder: '系统自动生成', 'stack-label': true }),
             name: DMINPUT.input({ ...modelOrg.name, value: '', rules: [val => val && val.length > 0 || '请输入'] }),
+            owner_id: DMINPUT.input({ ...modelOrg.owner_id, value: '', rules: [val => val && val.length > 0 || '请输入'] }),
+            status: DMINPUT.input({ ...modelOrg.status, dmType: 'select', value: 1 }),
             remark: DMINPUT.input({ ...modelOrg.remark, type: "textarea" }),
         }
 
@@ -128,9 +135,19 @@ export default defineComponent({
             columns: [
                 DMTBL.col('id', modelOrg.id.label),
                 DMTBL.col('name', modelOrg.name.label),
+                DMTBL.col('owner_name', modelOrg.owner_name.label),
                 DMTBL.col('remark', modelOrg.remark.label),
+                {
+                    ...DMTBL.col('status', modelOrg.status.label, modelOrg.status.options), style: row => {
+                        if (row.status == 0) {
+                            return 'color: #ef4864;font-weight:800'
+                        } else {
+                            return 'color: #25c25b;font-weight:800'
+                        }
+                    }
+                },
                 DMTBL.col('u_dt', modelOrg.u_dt.label),
-                DMTBL.col('u_nick_name', modelOrg.u_nick_name.label,),
+                DMTBL.col('u_nick_name', modelOrg.u_nick_name.label),
                 DMTBL.btn()
             ],
         })
@@ -151,6 +168,9 @@ export default defineComponent({
                     obj.type = actType.create
                     obj.loading = false
                     for (let key in actInput) {
+                        if (key == 'status') {
+                            continue;
+                        }
                         actInput[key].value = ''
                     }
                     break;
@@ -174,17 +194,28 @@ export default defineComponent({
                     let data = ''
                     switch (actPnl.value.type) {
                         case actType.create:
-                            url = '/org/create_root'
+                            url = '/org/create'
                             message = '新增组织成功'
                             data = {
                                 name: actInput.name.value,
+                                owner_id: actInput.owner_id.value,
+                                status: actInput.status.value,
                                 remark: actInput.remark.value,
                             }
                             break;
                         case actType.update:
+                            url = '/org/update'
+                            message = '修改组织成功'
+                            data = {
+                                id: actInput.id.value,
+                                name: actInput.name.value,
+                                owner_id: actInput.owner_id.value,
+                                status: actInput.status.value,
+                                remark: actInput.remark.value,
+                            }
                             break;
                         case actType.delete:
-                            url = '/org/delete_root'
+                            url = '/org/delete'
                             message = '删除组织成功'
                             data = {
                                 id: obj.data.id
@@ -217,6 +248,7 @@ export default defineComponent({
                 page_idx: pagination.page,
                 page_size: pagination.rowsPerPage,
                 name: queryInput.name.value,
+                status: queryInput.status.value,
             }, (rsp) => {
                 tbl.value.rows = rsp.data.records
                 pagination.rowsNumber = rsp.data.pagination.total
@@ -227,6 +259,8 @@ export default defineComponent({
             await dm.get('/org/detail', { id: org_id }, (rsp) => {
                 actInput.id.value = rsp.data.id
                 actInput.name.value = rsp.data.name
+                actInput.owner_id.value = rsp.data.owner_id
+                actInput.status.value = rsp.data.status
                 actInput.remark.value = rsp.data.remark
             })
             actPnl.value.loading = false

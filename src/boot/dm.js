@@ -15,10 +15,26 @@ class DataModel {
 }
 
 
+
+class DMACTPNL {
+    constructor(show = false, title = '', data = null, loading = true) {
+        // show:是否显示弹窗
+        this.show = show
+        // title:显示弹窗标题
+        this.title = title
+        // data:弹窗处理数据
+        this.data = data
+        // loading:弹窗加载动效
+        this.loading = loading
+    }
+}
+
+
 class DMOBJ {
     constructor(quasarObj, routerObj) {
         this.obj = quasarObj
         this.router = routerObj
+        this.actPnl = new DMACTPNL()
     }
 
     logout() {
@@ -82,6 +98,9 @@ class DMOBJ {
             this.apiNG(err)
         }
     }
+
+
+
 }
 
 
@@ -125,11 +144,12 @@ const DMBTN = {
     org: { id: 4, label: '组织', color: 'primary' },
     role: { id: 5, label: '角色', color: 'primary' },
     dept: { id: 6, label: '部门', color: 'primary' },
+    detail: { id: 7, label: '详情', color: 'primary' },
 }
 
 const DMINPUT = {
     query: (params) => {
-        let base = { filled: true, debounce: 500, dense: true, clearable: true }
+        let base = { filled: true, debounce: 500, dense: true, clearable: true, style: 'width:260px;' }
         return { ...base, ...params }
     },
     input: (params) => {
@@ -141,6 +161,8 @@ const DMINPUT = {
 
 const DMOPTS = {
     userStatus: [{ label: '启用', value: 1 }, { label: '停用', value: 0 },],
+    orgStatus: [{ label: '启用', value: 1 }, { label: '停用', value: 0 },],
+    roleStatus: [{ label: '启用', value: 1 }, { label: '停用', value: 0 },],
 }
 
 
