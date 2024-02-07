@@ -15,12 +15,8 @@
 
         <q-dialog v-model="actPnl.show">
             <dm_dialog :title="actPnl.title" :loading="actPnl.loading" class="dm-detail">
-
             </dm_dialog>
         </q-dialog>
-
-
-
     </q-page>
 </template>
 
