@@ -87,10 +87,10 @@ export default defineComponent({
             real_name: { label: '用户实名', maxlength: 32 },
             phone: { label: '手机号', },
             status: { label: '用户状态', options: DMOPTS.userStatus },
-            u_dt: { label: '更新时间' },
-            u_name: { label: '更新人' },
-            u_nick_name: { label: '更新人昵称' },
-            u_real_name: { label: '更新人实名' },
+            upd_dt: { label: '更新时间' },
+            upd_name: { label: '更新人' },
+            upd_nick_name: { label: '更新人昵称' },
+            upd_real_name: { label: '更新人实名' },
         }
 
         const queryInput = {
@@ -113,9 +113,9 @@ export default defineComponent({
                         }
                     }
                 },
-                DMTBL.col('u_dt', modelUser.u_dt.label),
+                DMTBL.col('u_dt', modelUser.upd_dt.label),
                 // { ...DMTBL.col('u_dt', modelUser.u_dt.label), format: val => `${val.split("T").join(" ")}` },
-                DMTBL.col('u_name', modelUser.u_name.label),
+                DMTBL.col('u_name', modelUser.upd_name.label),
                 DMTBL.btn()
             ],
         })
@@ -235,7 +235,7 @@ export default defineComponent({
                 tbl.value.rows = rsp.data.records
                 val = val.map(item => ({
                     // ...item, u_name: item['u_nick_name'] + '(' + item['u_real_name'] + ')'
-                    ...item, u_name: item['u_nick_name']
+                    ...item, u_name: item['upd_nick_name']
                 }))
                 tbl.value.rows = val
                 pagination.rowsNumber = rsp.data.pagination.total
