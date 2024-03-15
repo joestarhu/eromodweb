@@ -11,4 +11,7 @@ export default {
   remove: 'Remove',
   cancel: 'Cancel',
   save: 'Save',
+  account: "Account",
+  password: "Password",
+  msgRequired: 'Field is required',
 }

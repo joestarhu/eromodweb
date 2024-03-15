@@ -11,4 +11,8 @@ export default {
     remove: '移除',
     cancel: '取消',
     save: '确认',
+    account: '账号',
+    password: '密码',
+
+    msgRequired: '必填字段',
 }

@@ -6,7 +6,7 @@
                     @update:model-value="getList(tbl.pagination)"></dm_input>
             </div>
             <div class="col row reverse">
-                <q-btn color="primary" @click="btnClick(DMBTN.create.id)">{{ $t("create") }}</q-btn>
+                <q-btn square color="primary" @click="btnClick(DMBTN.create.id)">{{ $t("create") }}</q-btn>
             </div>
         </div>
         <div class="q-gutter-xs">
@@ -113,9 +113,9 @@ export default defineComponent({
                         }
                     }
                 },
-                DMTBL.col('u_dt', modelUser.upd_dt.label),
-                // { ...DMTBL.col('u_dt', modelUser.u_dt.label), format: val => `${val.split("T").join(" ")}` },
-                DMTBL.col('u_name', modelUser.upd_name.label),
+                DMTBL.col('upd_dt', modelUser.upd_dt.label),
+                // { ...DMTBL.col('upd_dt', modelUser.upd_dt.label), format: val => `${val.split("T").join(" ")}` },
+                DMTBL.col('upd_nick_name', modelUser.upd_name.label),
                 DMTBL.btn()
             ],
         })

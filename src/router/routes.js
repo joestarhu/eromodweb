@@ -9,11 +9,12 @@ const routes = [
       { path: '/org', component: () => import('pages/UserCenter/Org.vue') },
       { path: '/role', component: () => import('pages/UserCenter/Role.vue') },
       { path: '/service', component: () => import('pages/UserCenter/Services.vue') },
+      { path: '/acct', component: () => import('pages/UserCenter/AccountManager.vue') },
     ]
   },
   {
     path: '/login',
-    component: () => import('layouts/Login.vue'),
+    component: () => import('layouts/LoginPnl.vue'),
   },
   // Always leave this as last one,
   // but you can also remove it

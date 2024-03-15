@@ -1,16 +1,17 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar class="bg-white">
+    <!-- <q-header elevated> -->
+      <q-header bordered class="dm-header">
+        <q-toolbar>
         <!-- <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" /> -->
-
-        <q-toolbar-title class="text-bold" style="color: #34373c;">
+        <q-toolbar-title class="text-bold text-white" >
           EROMOD
         </q-toolbar-title>
 
         <q-avatar class="dm-avatar" text-color="white" color="info">
-          <img :src=userInfo.avatar v-if="userInfo.avatar != ''" />
-          <span v-else>{{ userInfo.nick_name[0] }}</span>
+          <img :src=userInfo.avatar />
+          <!-- <img :src=userInfo.avatar v-if="userInfo.avatar != ''" /> -->
+          <!-- <span v-else>{{ userInfo.nick_name[0] }}</span> -->
           <q-popup-proxy>
             <q-list dense>
 
@@ -63,12 +64,13 @@ export default defineComponent({
     const dm = new DMOBJ(useQuasar(), useRouter())
     const leftDrawerOpen = ref(false)
     const userInfo = ref({
-      nick_name: '获取用户名失败',
-      avatar: '',
+      nick_name: 'H',
+      avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
     })
     const data = [
       {
         title: '统一用户中心服务', children: [
+          { title: '账户管理', to: '/acct', icon: 'account_box' },
           { title: '用户管理', to: '/user', icon: 'account_box' },
           { title: '组织管理', to: '/org', icon: 'account_tree' },
           { title: '角色管理', to: '/role', icon: 'label' },
@@ -90,7 +92,10 @@ export default defineComponent({
     function get_user_info() {
       dm.get('/user/login_user', null, (rsp) => {
         userInfo.value.nick_name = rsp.data['nick_name']
-        userInfo.value.avatar = rsp.data['avatar']
+        if(rsp.data['avatar']){
+          userInfo.value.avatar = rsp.data['avatar']
+        }
+
       })
     }
 
@@ -116,9 +121,15 @@ export default defineComponent({
 
 
 <style scoped>
+.dm-header{
+  background-image:linear-gradient(135deg,#667eea 0%, #764ba2 100%);
+  /* background-image:linear-gradient(135deg,#764ba2 0%, #667eea 100%); */
+}
+
 .dm-avatar {
   width: 30px;
   height: 30px;
   cursor: pointer;
 }
 </style>
+

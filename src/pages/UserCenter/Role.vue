@@ -56,7 +56,6 @@ export default defineComponent({
 
         const queryInput = {
             name: DMINPUT.query(modelRole.name),
-            org_id: DMINPUT.query({ ...modelRole.org_id, dmType: 'select', "use-input": true }),
         }
 
         const tbl = ref({

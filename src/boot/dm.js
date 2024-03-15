@@ -1,6 +1,7 @@
+import { ref } from 'vue';
 import { api } from "./axios"
 
-const MSG_BASE_OPTS = { timeout: 1500, position: 'top' }
+const MSG_BASE_OPTS = { timeout: 2000, position: 'top', progress: true, classes: 'glossy' }
 const MSG_OK_OPTS = { ...MSG_BASE_OPTS, type: 'positive' }
 const MSG_NG_OPTS = { ...MSG_BASE_OPTS, type: 'negative' }
 
@@ -56,11 +57,14 @@ class DMOBJ {
     apiOK(rsp, cb_func) {
         // api请求成功,200的处理
         if (rsp.data.code == 0) {
-            cb_func(rsp.data)
+            if (cb_func != null) {
+                cb_func(rsp.data)
+            }
         } else {
             // 业务处理失败,通知提醒
             this.msgNG({ message: rsp.data.message })
         }
+
     }
 
     apiNG(err) {
@@ -70,37 +74,50 @@ class DMOBJ {
             return
         }
 
-        switch (err.response.status) {
-            case 401:
-                this.msgNG({ message: '用户未授权认证,请重新登录' })
-                this.logout()
-                break;
-            default:
-                this.msgNG({ message: '请求服务失败,请稍后重试', caption: err.message })
-                break;
-        }
+        // switch (err.response.status) {
+        //     case 401:
+        //         this.msgNG({ message: '用户未授权认证,请重新登录' })
+        //         this.logout()
+        //         break;
+        //     case 403:
+        //         this.msgNG({ message: '无操作权限', caption: err.message })
+        //         break;
+        //     default:
+        //         this.msgNG({ message: '请求服务失败,请稍后重试', caption: err.message })
+        //         break;
+        // }
     }
 
-    async post(url, data, cb_func = null) {
+    async httpReq(url, data, actLoading, callbackFn, errCallbackFn, method = 'get') {
+        if (actLoading) {
+            actLoading.loading = true
+        }
+
         try {
-            let rsp = await api.post(url, data)
-            this.apiOK(rsp, cb_func)
+            let rsp
+            if (method == 'get') {
+                rsp = await api.get(url, { params: data })
+            } else {
+                rsp = await api.post(url, data)
+            }
+            this.apiOK(rsp, callbackFn)
         } catch (err) {
             this.apiNG(err)
         }
-    }
 
-    async get(url, params, cb_func = null) {
-        try {
-            let rsp = await api.get(url, { params: params })
-            this.apiOK(rsp, cb_func)
-        } catch (err) {
-            this.apiNG(err)
+        if (actLoading) {
+            actLoading.loading = false
         }
     }
 
 
+    async post(url, data, actLoading = null, callbackFn = null, errCallbackFn = null) {
+        await this.httpReq(url, data, actLoading, callbackFn, errCallbackFn, 'post')
+    }
 
+    async get(url, params, actLoading = null, callbackFn = null, errCallbackFn = null) {
+        await this.httpReq(url, params, actLoading, callbackFn, errCallbackFn)
+    }
 }
 
 
@@ -149,7 +166,7 @@ const DMBTN = {
 
 const DMINPUT = {
     query: (params) => {
-        let base = { filled: true, debounce: 500, dense: true, clearable: true, style: 'width:260px;' }
+        let base = { filled: false, debounce: 500, dense: true, clearable: true, style: 'width:300px;', outlined: true }
         return { ...base, ...params }
     },
     input: (params) => {

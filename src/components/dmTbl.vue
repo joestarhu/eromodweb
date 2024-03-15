@@ -1,6 +1,12 @@
 <template>
     <q-table v-bind="qProps" :rows-per-page-options="rows_per_page_options" :pagination="pagination"
-        v-model:pagination="pagination" @request="onRequest">
+        v-model:pagination="pagination" @request="onRequest" flat bordered>
+        <template v-slot:loading>
+            <q-inner-loading showing  color="primary">
+            </q-inner-loading>
+          </template>
+
+
         <!-- 操作栏 -->
         <template #body-cell-btns="props">
             <q-td :props="props">
