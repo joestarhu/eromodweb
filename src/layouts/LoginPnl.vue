@@ -2,24 +2,26 @@
     <q-layout>
         <q-page-container>
             <q-page class="flex flex-center login-bg">
-                <q-card flat style="background-color: rgba(255, 255, 255, 0.3);">
+                <q-card bordered style="background-color: rgba(255, 255, 255, 0.3);">
                     <q-card-section>
-                <q-form @submit="login" class="q-gutter-md">
-                    <q-input v-bind="viewLogin.acct" v-model.trim="viewLogin.acct.value" lazy-rules style="width:260px">
-                        <template #prepend>
-                            <q-icon name="person"></q-icon>
-                        </template>
-                    </q-input>
-                    <q-input v-bind="viewLogin.passwd" v-model.trim="viewLogin.passwd.value" lazy-rules style="width:260px">
-                        <template #prepend>
-                            <q-icon name="password"></q-icon>
-                        </template>
-                    </q-input>
-
-                    <q-btn v-bind="viewLogin.btn_login" style="width:260px"></q-btn>
-                </q-form>
-            </q-card-section>
-            </q-card>
+                        <span class="text-h5 text-align">用户登录</span>
+                    </q-card-section>
+                    <q-card-section>
+                        <q-form @submit="login" class="q-gutter-md">
+                            <q-input v-bind="viewLogin.acct" v-model.trim="viewLogin.acct.value" lazy-rules style="width:260px">
+                                <template #prepend>
+                                    <q-icon name="person"></q-icon>
+                                </template>
+                            </q-input>
+                            <q-input v-bind="viewLogin.passwd" v-model.trim="viewLogin.passwd.value" lazy-rules style="width:260px">
+                                <template #prepend>
+                                    <q-icon name="password"></q-icon>
+                                </template>
+                            </q-input>
+                            <q-btn v-bind="viewLogin.btn_login" style="width:260px"></q-btn>
+                    </q-form>
+                    </q-card-section>
+                </q-card>
             </q-page>
         </q-page-container>
     </q-layout>

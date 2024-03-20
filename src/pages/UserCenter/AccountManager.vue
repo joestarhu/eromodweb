@@ -1,26 +1,19 @@
 <template>
     <q-page padding class="q-gutter-md">
-        <!-- <q-card bordered >
-            <q-card-section class="row col-inline">
-                <div class="col row q-col-gutter-xs">
-                <dm_input v-for="obj in viewQuery" :key="obj" :qProps="obj" :dmType="obj.dmType" v-model="obj.value"
-                    @update:model-value="getList(tbl.pagination)"></dm_input>
-                </div>
-                <div class="col-inline reverse">
-                    <q-btn color="primary" @click="btnClick(DMBTN.create.id)" >{{ $t("create") }}</q-btn>
-                </div>
-            </q-card-section>
-        </q-card> -->
-
         <div class="row-inline">
             <dm_tbl :qProps="tbl" :dmQueryInput='dmQueryInput' :dmHeaderBtn='dmHeaderBtn' :dmBtn="dmBtn" @query="getList" @btnClick="btnClick"></dm_tbl>
         </div>
 
         <q-dialog persistent v-model="actPnl.show">
             <dm_dialog class="dm-detail" :title="actPnl.type" :showAct="false">
-                <dm_form @submit="btnClick(DMBTN.confrim.id)" :btnLoading="actPnl.btnLoading">
+                <dm_form @submit="btnClick(DMBTN.confrim.id)" :btnLoading="actPnl.btnLoading" v-if="actPnl.type==actType.delete">
+                    <dm_input></dm_input>
+                </dm_form>
+                <dm_form @submit="btnClick(DMBTN.confrim.id)" :btnLoading="actPnl.btnLoading" v-else>
                     <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj" :dmType="obj.dmType" v-model="obj.value" />
                 </dm_form>
+
+
             </dm_dialog>
         </q-dialog>
 
@@ -42,9 +35,24 @@ import dm_form from 'src/components/dmForm.vue';
 const {t} = useI18n();
 const dm = new DMOBJ(useQuasar(), useRouter());
 
+const actType = {
+    create:'新增账户',
+    update:'修改账户',
+    delete:'删除账户',
+}
+
+const actPnl = ref({
+    show:false,
+    loading:false,
+    btnLoading:false,
+    type:actType.create,
+    data:null,
+})
+
+
 const viewDetail = {
-    phone:DMINPUT.required({...modelUser.phone, rules: [val => val && val.length > 0 || t('msgRequired')],mask: '###-####-####', 'unmasked-value': true }),
-    acct:DMINPUT.required({...modelUser.acct,rules: [val => val && val.length > 0 || t('msgRequired')]}),
+    phone:DMINPUT.required({...modelUser.phone, rules: [val => val && val.length > 0 || t('msgRequired')],mask: '###-####-####', 'unmasked-value': true ,}),
+    acct:DMINPUT.required({...modelUser.acct,rules: [val => val && val.length > 0 || t('msgRequired')],}),
     nick_name:DMINPUT.required({...modelUser.nick_name,rules: [val => val && val.length > 0 || t('msgRequired')]}),
     real_name:DMINPUT.input(modelUser.real_name),
     status:DMINPUT.select({...modelUser.status,value:modelUser.status.options[0]}),
@@ -71,7 +79,6 @@ const tbl = ref({
     pagination:null,
 })
 
-// const dmQueryInput = [DMINPUT.query(modelUser.phone),DMINPUT.query(modelUser.nick_name),DMINPUT.query({...modelUser.status, dmType: 'select'})]
 const dmQueryInput = {
     phone:DMINPUT.query(modelUser.phone),
     nick_name:DMINPUT.query(modelUser.nick_name),
@@ -81,42 +88,34 @@ const dmHeaderBtn = [DMBTN.create]
 const dmBtn = [DMBTN.update,DMBTN.delete]
 
 
-const actType = {
-    create:'新增账户',
-    update:'修改账户',
-    delete:'删除账户',
-}
-
-const actPnl = ref({
-    show:false,
-    loading:false,
-    btnLoading:false,
-    type:actType.create,
-    data:null,
-})
-
 function btnClick(btnID,props=null){
     let pnl = actPnl.value
-
     switch(btnID){
         case DMBTN.create.id:
             pnl.show = true;
             pnl.type = actType.create;
             pnl.data = props
+
+            viewDetail.phone.readonly=false
+            viewDetail.acct.readonly=false
+            for(let kw in viewDetail ){
+                viewDetail[kw].value = kw!='status' ? '':1;
+            }
             break;
         case DMBTN.update.id:
-            pnl.show = true;
+            pnl.show = true
+            pnl.type = actType.update
             pnl.data = props
-            pnl.type = actType.update;
+            viewDetail.phone.readonly=true
+            viewDetail.acct.readonly=true
             break;
         case DMBTN.delete.id:
             pnl.show = true;
             pnl.type = actType.delete;
-            pnl.data = props.row;
+            pnl.data = props;
             break;
         case DMBTN.confrim.id:
-            // pnl.btnLoading = true;
-            pnl.show = false;
+            pnl.btnLoading = true;
             break;
         default:break;
     }

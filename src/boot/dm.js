@@ -91,6 +91,7 @@ class DMOBJ {
     async httpReq(url, data, actLoading, callbackFn, errCallbackFn, method = 'get') {
         if (actLoading) {
             actLoading.loading = true
+            console.log(actLoading)
         }
 
         try {
@@ -107,6 +108,7 @@ class DMOBJ {
 
         if (actLoading) {
             actLoading.loading = false
+            console.log(actLoading)
         }
     }
 
