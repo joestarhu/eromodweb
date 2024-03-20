@@ -124,8 +124,8 @@ export default defineComponent({
         const selected_dept = ref(1)
 
         const actInput = {
-            id: DMINPUT.input({ ...modelOrg.id, value: '', readonly: true, placeholder: '系统自动生成', 'stack-label': true }),
-            name: DMINPUT.input({ ...modelOrg.name, value: '', rules: [val => val && val.length > 0 || '请输入'] }),
+            id: DMINPUT.required({ ...modelOrg.id, value: '', readonly: true, placeholder: '系统自动生成', 'stack-label': true }),
+            name: DMINPUT.required({ ...modelOrg.name, value: '', rules: [val => val && val.length > 0 || '请输入'] }),
             owner_id: DMINPUT.input({ ...modelOrg.owner_id, value: '', rules: [val => val && val.length > 0 || '请输入'] }),
             status: DMINPUT.input({ ...modelOrg.status, dmType: 'select', value: 1 }),
             remark: DMINPUT.input({ ...modelOrg.remark, type: "textarea" }),

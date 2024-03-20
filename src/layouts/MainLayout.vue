@@ -64,17 +64,18 @@ export default defineComponent({
     const dm = new DMOBJ(useQuasar(), useRouter())
     const leftDrawerOpen = ref(false)
     const userInfo = ref({
-      nick_name: 'H',
-      avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+      nick_name: 'Nick Name',
+      avatar: 'https://demos.pixinvent.com/materialize-vuejs-admin-template/demo-2/assets/avatar-1-08a2c8d8.png',
     })
     const data = [
       {
-        title: '统一用户中心服务', children: [
-          { title: '账户管理', to: '/acct', icon: 'account_box' },
-          { title: '用户管理', to: '/user', icon: 'account_box' },
-          { title: '组织管理', to: '/org', icon: 'account_tree' },
-          { title: '角色管理', to: '/role', icon: 'label' },
-          { title: '服务管理', to: '/service', icon: 'pix' },
+        title: '平台服务', children: [
+          { title: '账户管理', to: '/acct', icon: 'o_account_box' },
+          { title: '组织管理', to: '/org', icon: 'o_corporate_fare' },
+          { title: '应用管理', to: '/service', icon: 'api' },
+          // { title: '用户管理', to: '/user', icon: 'account_box' },
+          // { title: '角色管理', to: '/role', icon: 'label' },
+
         ]
       },
       // {
@@ -123,6 +124,7 @@ export default defineComponent({
 <style scoped>
 .dm-header{
   background-image:linear-gradient(135deg,#667eea 0%, #764ba2 100%);
+  /* background-image:linear-gradient(135deg,#0ba360 0%, #3cba92 100%) */
   /* background-image:linear-gradient(135deg,#764ba2 0%, #667eea 100%); */
 }
 

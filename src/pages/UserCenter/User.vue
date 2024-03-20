@@ -118,6 +118,7 @@ export default defineComponent({
                 DMTBL.col('upd_nick_name', modelUser.upd_name.label),
                 DMTBL.btn()
             ],
+            loading:true,
         })
 
         const dmBtn = [
@@ -230,7 +231,9 @@ export default defineComponent({
                 nick_name: queryInput.nick_name.value,
                 phone: queryInput.phone.value,
                 status: queryInput.status.value,
-            }, (rsp) => {
+            }, 
+            tbl.value,
+            (rsp) => {
                 let val = rsp.data.records
                 tbl.value.rows = rsp.data.records
                 val = val.map(item => ({

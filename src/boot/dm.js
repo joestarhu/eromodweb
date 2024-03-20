@@ -156,7 +156,7 @@ const DMTBL = {
 const DMBTN = {
     delete: { id: 0, label: '删除', color: 'negative' },
     create: { id: 1, label: '新增', color: 'primary' },
-    edit: { id: 2, label: '修改', color: 'primary' },
+    update: { id: 2, label: '修改', color: 'primary' },
     confrim: { id: 3, label: '确认', color: 'primary' },
     org: { id: 4, label: '组织', color: 'primary' },
     role: { id: 5, label: '角色', color: 'primary' },
@@ -166,11 +166,19 @@ const DMBTN = {
 
 const DMINPUT = {
     query: (params) => {
-        let base = { filled: false, debounce: 500, dense: true, clearable: true, style: 'width:300px;', outlined: true }
+        let base = { filled: false, debounce: 500, dense: true, clearable: true, style: 'width:300px;', outlined: true, dmType: 'query' }
         return { ...base, ...params }
     },
     input: (params) => {
-        let base = { filled: true, "lazy-rules": true, hint: '', dense: true }
+        let base = { filled: true, "lazy-rules": true, hint: '', dense: false }
+        return { ...base, ...params }
+    },
+    required: (params) => {
+        let base = { filled: true, "lazy-rules": true, hint: '', dense: false, dmType: 'required' }
+        return { ...base, ...params }
+    },
+    select: (params) => {
+        let base = { filled: true, "lazy-rules": true, hint: '', dense: false, dmType: 'select' }
         return { ...base, ...params }
     },
 }

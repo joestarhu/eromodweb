@@ -2,6 +2,8 @@
     <q-layout>
         <q-page-container>
             <q-page class="flex flex-center login-bg">
+                <q-card flat style="background-color: rgba(255, 255, 255, 0.3);">
+                    <q-card-section>
                 <q-form @submit="login" class="q-gutter-md">
                     <q-input v-bind="viewLogin.acct" v-model.trim="viewLogin.acct.value" lazy-rules style="width:260px">
                         <template #prepend>
@@ -16,6 +18,8 @@
 
                     <q-btn v-bind="viewLogin.btn_login" style="width:260px"></q-btn>
                 </q-form>
+            </q-card-section>
+            </q-card>
             </q-page>
         </q-page-container>
     </q-layout>
@@ -23,25 +27,20 @@
 
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router'
+import { useI18n } from "vue-i18n"
 import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router'
+import { ref } from 'vue';
+import { modelUser } from 'src/boot/model';
 import { DMOBJ } from 'src/boot/dm';
 import { encryptString } from 'src/boot/security';
-import { useI18n } from "vue-i18n"
 
 const {t} = useI18n();
 const dm = new DMOBJ(useQuasar(), useRouter());
 
-
-const model = {
-    acct:{label:t('account'),rules: [val => val && val.length > 0 || t('msgRequired')]},
-    passwd:{label:t('password'),type:"password",rules: [val => val && val.length > 0 || t('msgRequired')]},
-}
-
 const viewLogin = ref({
-    acct:model.acct,
-    passwd:model.passwd,
+    acct:{...modelUser.acct,rules: [val => val && val.length > 0 || t('msgRequired')]},
+    passwd:{...modelUser.passwd,type:'password',rules: [val => val && val.length > 0 || t('msgRequired')]},
     btn_login:{ label: ref(t('login')), color: 'primary', type: 'submit'},
 })
 

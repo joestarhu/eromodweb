@@ -15,9 +15,12 @@
 
             <q-card-section class="row q-pt-none">
                 <div class="col">
+                    <slot name="left_btn"></slot>
                 </div>
                 <div class="col row reverse q-gutter-sm">
-                    <q-btn color="primary" type="submit">{{ btnMsg }}</q-btn>
+                    <slot name="right_btn">
+                        <q-btn color="primary" type="submit" :loading="btnLoading">{{ btnMsg }}</q-btn>
+                    </slot>
                     <q-btn v-close-popup>{{ $t('cancel') }}</q-btn>
                 </div>
             </q-card-section>
@@ -38,7 +41,11 @@ export default defineComponent({
         btnMsg: {
             type: String,
             default: '确认',
-        }
+        },
+        btnLoading:{
+            type:Boolean,
+            default:false,
+        },
     },
 
     setup(props, ctx) {

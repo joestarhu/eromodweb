@@ -1,6 +1,18 @@
 <template>
-    <q-input v-if="dmType == 'text'" v-bind="qProps" v-model.trim="innerValue"></q-input>
-    <q-select v-if="dmType == 'select'" v-bind="qProps" v-model.trim="innerValue" emit-value map-options></q-select>
+    <q-input v-if="dmType == 'text'" v-model.trim="innerValue" v-bind="qProps">
+    </q-input>
+    <q-input v-if="dmType == 'query'" v-model.trim="innerValue" :clearable="true" v-bind="qProps">
+        <template v-slot:append>
+            <q-icon size="0.5em" name="search" />
+        </template>
+    </q-input>
+    <q-input v-if="dmType == 'required'" v-model.trim="innerValue" v-bind="qProps">
+        <template v-slot:append>
+            <q-icon size="0.5em" name="tag" />
+            <span style="font-size: 0.5em">必填</span>
+        </template>
+    </q-input>
+    <q-select v-if="dmType == 'select'" v-model.trim="innerValue" emit-value map-options v-bind="qProps"></q-select>
     <!-- <span v-if="dmType == 'radio'" class="text">{{ qProps.label }}</span>
     <q-radio v-if="dmType == 'radio'" v-bind="qProps" v-model="innerValue"></q-radio> -->
     <!-- <q-toggle v-if="dmType == 'toggle'" v-bind="qProps" v-model="innerValue" left-label></q-toggle> -->
