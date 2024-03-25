@@ -94,7 +94,7 @@ function login() {
         passwd: encryptString(res.passwd.value),
     }
 
-    dm.post('/user/login', data, res.btn_login,
+    dm.post('/auth/login', data, res.btn_login,
         (rsp) => {
             let jwt = rsp.data['jwt']
             localStorage.setItem('jwt', jwt)
@@ -110,7 +110,7 @@ function login() {
 }
 
 function orgChoice(orgID) {
-    dm.post('/user/select_org', { org_id: orgID }, null, (rsp) => {
+    dm.post('/auth/select_org', { org_id: orgID }, null, (rsp) => {
         let jwt = rsp.data['jwt']
         localStorage.setItem('jwt', jwt)
         dm.router.push('/')

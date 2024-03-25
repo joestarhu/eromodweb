@@ -50,6 +50,7 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { DMOBJ } from 'src/boot/dm'
+import { getJwtPayload } from 'src/boot/security'
 import dm_menu from 'components/dmMenu.vue'
 
 
@@ -91,13 +92,9 @@ export default defineComponent({
 
 
     function get_user_info() {
-      dm.get('/user/login_user', null, (rsp) => {
-        userInfo.value.nick_name = rsp.data['nick_name']
-        if (rsp.data['avatar']) {
-          userInfo.value.avatar = rsp.data['avatar']
-        }
-
-      })
+      // 从JWT中获取用户信息
+      let payload = getJwtPayload(localStorage.getItem('jwt'))
+      userInfo.value.nick_name = payload['nick_name']
     }
 
 

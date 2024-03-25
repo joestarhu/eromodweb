@@ -58,9 +58,9 @@ const viewDetail = {
 
 
 const actRes = {
-    create: { title: '新增账户', url: '/user/create', },
-    update: { title: '修改账户', url: '/user/update', },
-    delete: { title: '删除账户', url: '/user/delete', },
+    create: { title: '新增账户', url: '/account/create', },
+    update: { title: '修改账户', url: '/account/update', },
+    delete: { title: '删除账户', url: '/account/delete', },
 }
 
 const actPnl = ref({
@@ -186,7 +186,7 @@ function getList(pagination) {
         tbl.value.pagination = pagination
     }
 
-    dm.get('/user/list', data, tbl.value,
+    dm.get('/account/list', data, tbl.value,
         (rsp) => {
             let val = rsp.data.records
             val = val.map(item => ({
@@ -199,7 +199,7 @@ function getList(pagination) {
 }
 
 function getDetail(id) {
-    dm.get('/user/detail', { id: id }, actPnl.value, (rsp) => {
+    dm.get('/account/detail', { id: id }, actPnl.value, (rsp) => {
         for (let kw in viewDetail) {
             viewDetail[kw].value = rsp.data[kw]
         }

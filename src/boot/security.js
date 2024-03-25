@@ -35,4 +35,4 @@ function getUserOrgs(jwt) {
 
 }
 
-export { encryptString, getLoginOrg, getUserOrgs }
+export { encryptString, getJwtPayload, getLoginOrg, getUserOrgs }
