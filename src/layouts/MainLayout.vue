@@ -1,10 +1,10 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <!-- <q-header elevated> -->
-      <q-header bordered class="dm-header">
-        <q-toolbar>
+    <q-header bordered class="dm-header">
+      <q-toolbar>
         <!-- <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" /> -->
-        <q-toolbar-title class="text-bold text-white" >
+        <q-toolbar-title class="text-bold text-white">
           EROMOD
         </q-toolbar-title>
 
@@ -93,7 +93,7 @@ export default defineComponent({
     function get_user_info() {
       dm.get('/user/login_user', null, (rsp) => {
         userInfo.value.nick_name = rsp.data['nick_name']
-        if(rsp.data['avatar']){
+        if (rsp.data['avatar']) {
           userInfo.value.avatar = rsp.data['avatar']
         }
 
@@ -122,8 +122,8 @@ export default defineComponent({
 
 
 <style scoped>
-.dm-header{
-  background-image:linear-gradient(135deg,#667eea 0%, #764ba2 100%);
+.dm-header {
+  background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   /* background-image:linear-gradient(135deg,#0ba360 0%, #3cba92 100%) */
   /* background-image:linear-gradient(135deg,#764ba2 0%, #667eea 100%); */
 }
@@ -134,4 +134,3 @@ export default defineComponent({
   cursor: pointer;
 }
 </style>
-

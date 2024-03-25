@@ -4,22 +4,23 @@
         <template v-slot:top>
             <div class="col row q-col-gutter-xs">
                 <dm_input v-for="obj in dmQueryInput" :key="obj" :qProps="obj" :dmType="obj.dmType" v-model="obj.value"
-                  @update:model-value="onRequest(null)"/>
+                    @update:model-value="onRequest(null)" />
             </div>
             <div class="col-inline reverse q-gutter-xs">
-                <q-btn v-for="obj in dmHeaderBtn" :key="obj.id" :label="obj.label" :color="obj.color" @click="btnClick(obj.id,props)"/>
+                <q-btn v-for="obj in dmHeaderBtn" :key="obj.id" :label="obj.label" :color="obj.color"
+                    @click="btnClick(obj.id, props)" />
             </div>
         </template>
 
         <template v-slot:loading>
-            <q-inner-loading showing  color="primary">
+            <q-inner-loading showing color="primary">
             </q-inner-loading>
-          </template>
+        </template>
 
         <!-- 行操作栏 -->
         <template #body-cell-btns="props">
             <q-td :props="props">
-                <q-btn v-for="obj in dmBtn" :key="obj.id" :label="obj.label" :color="obj.color"
+                <q-btn v-for="obj in dmRowBtn" :key="obj.id" :label="obj.label" :color="obj.color"
                     @click="btnClick(obj.id, props)" dense flat />
             </q-td>
         </template>
@@ -33,23 +34,23 @@ import dm_input from 'src/components/dmInput.vue';
 export default defineComponent({
     name: 'dm_tbl',
     emits: ['btnClick', 'query'],
-    components:{dm_input},
+    components: { dm_input },
 
     props: {
         qProps: {
             type: Object,
         },
         // 每行的操作按钮
-        dmBtn: {
+        dmRowBtn: {
             default: [],
         },
         // 查询组件
-        dmQueryInput:{
-            default:{},
+        dmQueryInput: {
+            default: {},
         },
         //头部操作按钮 
-        dmHeaderBtn:{
-            default:[],
+        dmHeaderBtn: {
+            default: [],
         },
     },
     setup(props, ctx) {
@@ -62,7 +63,7 @@ export default defineComponent({
         })
 
         function onRequest(data) {
-            if(data != null){
+            if (data != null) {
                 pagination.value.page = data.pagination.page
                 if (pagination.value.rowsPerPage != data.pagination.rowsPerPage) {
                     localStorage.setItem('pageSize', data.pagination.rowsPerPage)

@@ -20,8 +20,8 @@
                 <div class="col row reverse q-gutter-sm">
                     <slot name="right_btn">
                         <q-btn color="primary" type="submit" :loading="btnLoading">{{ btnMsg }}</q-btn>
+                        <q-btn v-close-popup>{{ $t('cancel') }}</q-btn>
                     </slot>
-                    <q-btn v-close-popup>{{ $t('cancel') }}</q-btn>
                 </div>
             </q-card-section>
         </q-form>
@@ -42,9 +42,9 @@ export default defineComponent({
             type: String,
             default: '确认',
         },
-        btnLoading:{
-            type:Boolean,
-            default:false,
+        btnLoading: {
+            type: Boolean,
+            default: false,
         },
     },
 

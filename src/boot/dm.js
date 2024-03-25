@@ -74,24 +74,23 @@ class DMOBJ {
             return
         }
 
-        // switch (err.response.status) {
-        //     case 401:
-        //         this.msgNG({ message: '用户未授权认证,请重新登录' })
-        //         this.logout()
-        //         break;
-        //     case 403:
-        //         this.msgNG({ message: '无操作权限', caption: err.message })
-        //         break;
-        //     default:
-        //         this.msgNG({ message: '请求服务失败,请稍后重试', caption: err.message })
-        //         break;
-        // }
+        switch (err.response.status) {
+            case 401:
+                this.msgNG({ message: '用户未授权认证,请重新登录' })
+                this.logout()
+                break;
+            case 403:
+                this.msgNG({ message: '无操作权限', caption: err.message })
+                break;
+            default:
+                this.msgNG({ message: '请求服务失败,请稍后重试', caption: err.message })
+                break;
+        }
     }
 
     async httpReq(url, data, actLoading, callbackFn, errCallbackFn, method = 'get') {
-        if (actLoading) {
+        if (actLoading != null) {
             actLoading.loading = true
-            console.log(actLoading)
         }
 
         try {
@@ -106,9 +105,8 @@ class DMOBJ {
             this.apiNG(err)
         }
 
-        if (actLoading) {
+        if (actLoading != null) {
             actLoading.loading = false
-            console.log(actLoading)
         }
     }
 

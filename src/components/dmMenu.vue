@@ -1,9 +1,9 @@
 <template>
-    <q-item-label header class="text-weight-bold text-uppercase" :caption="caption" v-show="title">
+    <!-- <q-item-label header class="text-weight-bold text-uppercase" :caption="caption" v-show="title">
         {{ title }}
-    </q-item-label>
-    <q-expansion-item v-for='info in children' :icon="info.icon ? info.icon : 'widgets'" :key="info.to" :label="info.title"
-        :to="info.to" :href="info.link" hide-expand-icon>
+    </q-item-label> -->
+    <q-expansion-item v-for='info in children' :icon="info.icon ? info.icon : 'widgets'" :key="info.to"
+        :label="info.title" :to="info.to" :href="info.link" hide-expand-icon>
     </q-expansion-item>
     <q-separator class="q-ma-sm" />
 </template>

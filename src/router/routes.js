@@ -5,11 +5,15 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
+
+      { path: '/acct', component: () => import('pages/UserCenter/AccountManager.vue') },
+      { path: '/org', component: () => import('pages/UserCenter/OrgManager.vue') },
+
+
       { path: '/user', component: () => import('pages/UserCenter/User.vue') },
-      { path: '/org', component: () => import('pages/UserCenter/Org.vue') },
       { path: '/role', component: () => import('pages/UserCenter/Role.vue') },
       { path: '/service', component: () => import('pages/UserCenter/AppServices.vue') },
-      { path: '/acct', component: () => import('pages/UserCenter/AccountManager.vue') },
+
     ]
   },
   {

@@ -1,6 +1,7 @@
 import { route } from 'quasar/wrappers'
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
 import routes from './routes'
+import { getLoginOrg } from 'src/boot/security';
 
 /*
  * If not building with SSR mode, you can
@@ -28,19 +29,35 @@ export default route(function (/* { store, ssrContext } */) {
 
   // 路由守护(登录路由守护)
   Router.beforeEach((to, from, next) => {
-    if (localStorage.getItem('jwt') != null) {
+    let jwt = localStorage.getItem('jwt')
+
+    if (jwt == null) {
       if (to.path === '/login') {
-        next('/')
-      } else {
-        next()
-      }
-    } else {
-      if (to.path === '/login') {
+        // 未登录前往登录界面
         next()
       } else {
+        // 未登录前往非登录界面以外界面
         next('/login')
       }
+    } else {
+      let login_org = getLoginOrg(jwt)
+      if (login_org == null) {
+        if (to.path === '/login') {
+          // 未登录前往登录界面
+          next()
+        } else {
+          // 未登录前往非登录界面以外界面
+          next('/login')
+        }
+      } else {
+        if (to.path === '/login') {
+          next('/')
+        } else {
+          next()
+        }
+      }
     }
+
   })
 
   return Router
