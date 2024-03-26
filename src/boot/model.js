@@ -10,7 +10,7 @@ const dmSTYLE = {
 const dmOPTS = {
     acctStatus: [{ label: '启用', value: 1, style: dmSTYLE.enable }, { label: '停用', value: 0, style: dmSTYLE.disable },],
     orgStatus: [{ label: '启用', value: 1, style: dmSTYLE.enable }, { label: '停用', value: 0, style: dmSTYLE.disable },],
-    roleStatus: [{ label: '启用', value: 1 }, { label: '停用', value: 0 },],
+    roleStatus: [{ label: '启用', value: 1, style: dmSTYLE.enable }, { label: '停用', value: 0, style: dmSTYLE.disable },],
 }
 
 const modelBase = {
@@ -32,10 +32,16 @@ const modelUser = {
 
 
 const modelOrg = {
-    name: { label: '名称' },
+    name: { label: '组织名称' },
     owner_id: { label: '组织管理者ID' },
     owner_name: { label: '组织管理员' },
     status: { label: '状态', options: dmOPTS.orgStatus },
+    remark: { label: '备注' },
+}
+
+const modelRole = {
+    name: { label: '角色名称' },
+    status: { label: '状态', options: dmOPTS.roleStatus },
     remark: { label: '备注' },
 }
 
@@ -44,4 +50,4 @@ const modelAppServices = {
     name: { label: '应用名称' },
 }
 
-export { dmOPTS, modelBase, modelUser, modelOrg }
+export { dmOPTS, modelBase, modelUser, modelOrg, modelRole }

@@ -15,7 +15,7 @@
                     <div v-else>
                         <div v-if="actPnl.res.title === actRes.delete.title">
                             <span>请确认是否删除
-                                <span class="text-negative">组织:{{ actPnl.data.name }}</span>
+                                <span class="text-negative">角色:{{ actPnl.data.name }}</span>
                                 的数据
                             </span>
                         </div>
@@ -46,7 +46,7 @@ import { useI18n } from "vue-i18n"
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router'
 import { ref } from 'vue';
-import { modelBase, modelOrg } from 'src/boot/model';
+import { modelBase, modelRole } from 'src/boot/model';
 import { DMOBJ, DMTBL, DMBTN, DMINPUT } from 'src/boot/dm';
 import dm_input from 'src/components/dmInput.vue';
 import dm_tbl from 'src/components/dmTbl.vue';
@@ -57,9 +57,9 @@ const { t } = useI18n();
 const dm = new DMOBJ(useQuasar(), useRouter());
 
 const actRes = {
-    create: { title: '新增组织', url: '/org/create', },
-    update: { title: '修改组织', url: '/org/update', },
-    delete: { title: '删除组织', url: '/org/delete', },
+    create: { title: '新增角色', url: '/role/create', },
+    update: { title: '修改角色', url: '/role/update', },
+    delete: { title: '删除角色', url: '/role/delete', },
 }
 
 const actPnl = ref({
@@ -71,16 +71,15 @@ const actPnl = ref({
 
 
 const viewDetail = {
-    name: DMINPUT.required({ ...modelOrg.name, rules: [val => val && val.length > 0 || t('msgRequired')] }),
-    owner_id: DMINPUT.required({ ...modelOrg.owner_id, value: '', rules: [val => val && val.length > 0 || t('msgRequired')] }),
-    status: DMINPUT.input({ ...modelOrg.status, dmType: 'select', value: 1 }),
-    remark: DMINPUT.input({ ...modelOrg.remark, type: "textarea" }),
+    name: DMINPUT.required({ ...modelRole.name, rules: [val => val && val.length > 0 || t('msgRequired')] }),
+    status: DMINPUT.input({ ...modelRole.status, dmType: 'select', value: 1 }),
+    remark: DMINPUT.input({ ...modelRole.remark, type: "textarea" }),
 }
 
 
 const dmQueryInput = {
-    name: DMINPUT.query(modelOrg.name),
-    status: DMINPUT.query({ ...modelOrg.status, dmType: 'select' }),
+    name: DMINPUT.query(modelRole.name),
+    status: DMINPUT.query({ ...modelRole.status, dmType: 'select' }),
 }
 
 const dmHeaderBtn = [DMBTN.create]
@@ -88,14 +87,13 @@ const dmRowBtn = [DMBTN.update, DMBTN.delete]
 
 const tbl = ref({
     columns: [
-        DMTBL.col('name', modelOrg.name.label),
-        DMTBL.col('remark', modelOrg.remark.label),
-        DMTBL.col('owner_name', modelOrg.owner_name.label),
+        DMTBL.col('name', modelRole.name.label),
+        DMTBL.col('remark', modelRole.remark.label),
         { ...DMTBL.col('upd_dt', modelBase.upd_dt.label), format: val => `${val.split("T").join(" ")}` },
         DMTBL.col('upd_nick_name', modelBase.upd_name.label),
         {
-            ...DMTBL.col('status', modelOrg.status.label, modelOrg.status.options), style: row => {
-                let sts = modelOrg.status
+            ...DMTBL.col('status', modelRole.status.label, modelRole.status.options), style: row => {
+                let sts = modelRole.status
                 for (let t in sts.options) {
                     if (sts.options[t].value == row.status) {
                         return sts.options[t].style
@@ -124,14 +122,14 @@ function getList(pagination) {
         tbl.value.pagination = pagination
     }
 
-    dm.get('/org/list', data, tbl.value, (rsp) => {
+    dm.get('/role/list', data, tbl.value, (rsp) => {
         tbl.value.rows = rsp.data.records
         pagination.rowsNumber = rsp.data.pagination.total
     })
 }
 
 function getDetail(id) {
-    dm.get('/org/detail', { id: id }, actPnl.value, (rsp) => {
+    dm.get('/role/detail', { id: id }, actPnl.value, (rsp) => {
         for (let kw in viewDetail) {
             viewDetail[kw].value = rsp.data[kw]
         }

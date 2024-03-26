@@ -210,8 +210,6 @@ function getDetail(id) {
     })
 
 }
-
-
 </script>
 
 

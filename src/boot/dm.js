@@ -154,7 +154,7 @@ const DMTBL = {
 
 
 const DMBTN = {
-    delete: { id: 0, label: '删除', color: 'negative' },
+    delete: { id: 0, label: '删除', color: 'primary' },
     create: { id: 1, label: '新增', color: 'primary' },
     update: { id: 2, label: '修改', color: 'primary' },
     confrim: { id: 3, label: '确认', color: 'primary' },

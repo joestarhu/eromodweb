@@ -74,8 +74,9 @@ export default defineComponent({
           { title: '账户管理', to: '/acct', icon: 'o_account_box' },
           { title: '组织管理', to: '/org', icon: 'o_corporate_fare' },
           { title: '应用管理', to: '/service', icon: 'api' },
+          { title: '角色管理', to: '/role', icon: 'label' },
           // { title: '用户管理', to: '/user', icon: 'account_box' },
-          // { title: '角色管理', to: '/role', icon: 'label' },
+
 
         ]
       },

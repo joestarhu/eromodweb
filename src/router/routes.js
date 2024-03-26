@@ -8,10 +8,10 @@ const routes = [
 
       { path: '/acct', component: () => import('pages/UserCenter/AccountManager.vue') },
       { path: '/org', component: () => import('pages/UserCenter/OrgManager.vue') },
-
+      { path: '/role', component: () => import('pages/UserCenter/RoleManager.vue') },
 
       { path: '/user', component: () => import('pages/UserCenter/User.vue') },
-      { path: '/role', component: () => import('pages/UserCenter/Role.vue') },
+
       { path: '/service', component: () => import('pages/UserCenter/AppServices.vue') },
 
     ]
