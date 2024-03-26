@@ -13,7 +13,11 @@
                     </div>
                     <div v-else>
                         <div v-if="actPnl.res.title === actRes.delete.title">
-                            <span>delete panel</span>
+                            <span>请确认是否删除
+                                <span class="text-negative">账号:{{ actPnl.data.acct }}</span>,
+                                <span class="text-negative">昵称:{{ actPnl.data.nick_name }}</span>
+                                的数据
+                            </span>
                         </div>
                         <div v-if="actPnl.res.title === actRes.create.title">
                             <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj" :dmType="obj.dmType"
