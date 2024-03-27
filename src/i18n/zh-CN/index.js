@@ -15,4 +15,5 @@ export default {
     password: '密码',
 
     msgRequired: '必填字段',
+    msgNoData: '无数据',
 }

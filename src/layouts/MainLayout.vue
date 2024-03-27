@@ -5,7 +5,7 @@
       <q-toolbar>
         <!-- <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" /> -->
         <q-toolbar-title class="text-bold text-white">
-          EROMOD
+          {{ userInfo.login_org_name }}
         </q-toolbar-title>
 
         <q-avatar class="dm-avatar" text-color="white" color="info">
@@ -67,6 +67,8 @@ export default defineComponent({
     const userInfo = ref({
       nick_name: 'Nick Name',
       avatar: 'https://demos.pixinvent.com/materialize-vuejs-admin-template/demo-2/assets/avatar-1-08a2c8d8.png',
+      user_orgs: {},
+      login_org_name: ''
     })
     const data = [
       {
@@ -74,10 +76,13 @@ export default defineComponent({
           { title: '账户管理', to: '/acct', icon: 'o_account_box' },
           { title: '组织管理', to: '/org', icon: 'o_corporate_fare' },
           { title: '应用管理', to: '/service', icon: 'api' },
-          { title: '角色管理', to: '/role', icon: 'label' },
-          // { title: '用户管理', to: '/user', icon: 'account_box' },
-
-
+        ]
+      },
+      {
+        title: '统一用户中心', children: [
+          // { title: '用户管理', to: '/user', icon: 'o_account_box' },
+          // { title: '部门管理', to: '/dept', icon: 'o_account_tree' },
+          { title: '角色管理', to: '/role', icon: 'o_label' },
         ]
       },
       // {
@@ -96,6 +101,13 @@ export default defineComponent({
       // 从JWT中获取用户信息
       let payload = getJwtPayload(localStorage.getItem('jwt'))
       userInfo.value.nick_name = payload['nick_name']
+      userInfo.value.user_orgs = payload['user_orgs']
+      for (let i in userInfo.value.user_orgs) {
+        if (userInfo.value.user_orgs[i].id == payload['login_org']) {
+          userInfo.value.login_org_name = userInfo.value.user_orgs[i].name
+          break;
+        }
+      }
     }
 
 

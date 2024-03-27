@@ -20,11 +20,11 @@
                             </span>
                         </div>
                         <div v-if="actPnl.res.title === actRes.create.title">
-                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj" :dmType="obj.dmType"
+                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj.qProps" :dmType="obj.dmType"
                                 v-model="obj.value" />
                         </div>
                         <div v-if="actPnl.res.title === actRes.update.title">
-                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj" :dmType="obj.dmType"
+                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj.qProps" :dmType="obj.dmType"
                                 v-model="obj.value" />
                         </div>
                     </div>
@@ -53,11 +53,11 @@ const { t } = useI18n();
 const dm = new DMOBJ(useQuasar(), useRouter());
 
 const viewDetail = {
-    phone: DMINPUT.required({ ...modelUser.phone, rules: [val => val && val.length > 0 || t('msgRequired')], mask: '###-####-####', 'unmasked-value': true }),
-    acct: DMINPUT.required({ ...modelUser.acct, rules: [val => val && val.length > 0 || t('msgRequired')], }),
-    nick_name: DMINPUT.required({ ...modelUser.nick_name, rules: [val => val && val.length > 0 || t('msgRequired')] }),
-    real_name: DMINPUT.input(modelUser.real_name),
-    status: DMINPUT.select({ ...modelUser.status, value: modelUser.status.options[0] }),
+    phone: DMINPUT.required({ ...modelUser.phone, rules: [val => val && val.length > 0 || t('msgRequired')], mask: '###-####-####', 'unmasked-value': true }).value,
+    acct: DMINPUT.required({ ...modelUser.acct, rules: [val => val && val.length > 0 || t('msgRequired')], }).value,
+    nick_name: DMINPUT.required({ ...modelUser.nick_name, rules: [val => val && val.length > 0 || t('msgRequired')] }).value,
+    real_name: DMINPUT.input(modelUser.real_name).value,
+    status: DMINPUT.select(modelUser.status, modelUser.status.options[0]).value,
 }
 
 
@@ -98,9 +98,9 @@ const tbl = ref({
 })
 
 const dmQueryInput = {
-    phone: DMINPUT.query(modelUser.phone),
-    nick_name: DMINPUT.query(modelUser.nick_name),
-    status: DMINPUT.query({ ...modelUser.status, dmType: 'select' }),
+    phone: DMINPUT.query(modelUser.phone).value,
+    nick_name: DMINPUT.query(modelUser.nick_name).value,
+    status: DMINPUT.querySelect(modelUser.status).value,
 }
 const dmHeaderBtn = [DMBTN.create]
 const dmRowBtn = [DMBTN.update, DMBTN.delete]
@@ -112,8 +112,8 @@ function btnClick(btnID, props = null) {
         case DMBTN.create.id:
             pnl.show = true;
             pnl.res = actRes.create
-            viewDetail.phone.readonly = false
-            viewDetail.acct.readonly = false
+            viewDetail.phone.qProps.readonly = false
+            viewDetail.acct.qProps.readonly = false
             for (let kw in viewDetail) {
                 viewDetail[kw].value = kw != 'status' ? '' : 1;
             }
@@ -122,8 +122,8 @@ function btnClick(btnID, props = null) {
             pnl.show = true
             pnl.res = actRes.update
             pnl.data = props.row
-            viewDetail.phone.readonly = true
-            viewDetail.acct.readonly = true
+            viewDetail.phone.qProps.readonly = true
+            viewDetail.acct.qProps.readonly = true
             getDetail(pnl.data.id)
             break;
         case DMBTN.delete.id:

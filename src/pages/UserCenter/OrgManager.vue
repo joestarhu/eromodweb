@@ -19,13 +19,9 @@
                                 的数据
                             </span>
                         </div>
-                        <div v-if="actPnl.res.title === actRes.create.title">
-                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj" :dmType="obj.dmType"
-                                v-model="obj.value" />
-                        </div>
-                        <div v-if="actPnl.res.title === actRes.update.title">
-                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj" :dmType="obj.dmType"
-                                v-model="obj.value" />
+                        <div v-if="actPnl.res.title != actRes.delete.title">
+                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj.qProps" :dmType="obj.dmType"
+                                v-model="obj.value" @filter="filter" />
                         </div>
                     </div>
                     <template #right_btn v-if="actPnl.loading">
@@ -71,16 +67,16 @@ const actPnl = ref({
 
 
 const viewDetail = {
-    name: DMINPUT.required({ ...modelOrg.name, rules: [val => val && val.length > 0 || t('msgRequired')] }),
-    owner_id: DMINPUT.required({ ...modelOrg.owner_id, value: '', rules: [val => val && val.length > 0 || t('msgRequired')] }),
-    status: DMINPUT.input({ ...modelOrg.status, dmType: 'select', value: 1 }),
-    remark: DMINPUT.input({ ...modelOrg.remark, type: "textarea" }),
+    name: DMINPUT.required({ ...modelOrg.name, rules: [val => val && val.length > 0 || t('msgRequired')] }).value,
+    owner_id: DMINPUT.selectFilter({ ...modelOrg.owner_name, rules: [val => val || t('msgRequired')] }).value,
+    status: DMINPUT.select(modelOrg.status, 1).value,
+    remark: DMINPUT.input({ ...modelOrg.remark, type: "textarea" }).value,
 }
 
 
 const dmQueryInput = {
-    name: DMINPUT.query(modelOrg.name),
-    status: DMINPUT.query({ ...modelOrg.status, dmType: 'select' }),
+    name: DMINPUT.query(modelOrg.name).value,
+    status: DMINPUT.querySelect(modelOrg.status).value
 }
 
 const dmHeaderBtn = [DMBTN.create]
@@ -110,6 +106,44 @@ const tbl = ref({
 })
 
 
+function filter(val, update, abort) {
+    update(() => {
+        get_owner_options(val)
+        // let data = {
+        //     phone: val,
+        //     status: 1,
+        //     page_idx: 1,
+        //     page_size: 5,
+        // }
+        // let input = viewDetail.owner_id.qProps
+        // dm.get('/account/list', data, input, (rsp) => {
+        //     input.options = []
+        //     for (let x of rsp.data.records) {
+        //         input.options.push({ label: x.nick_name, value: x.id, caption: x.phone })
+        //     }
+        // })
+    })
+}
+
+
+
+function get_owner_options(val) {
+    let data = {
+        phone: val,
+        status: 1,
+        page_idx: 1,
+        page_size: 5,
+    }
+
+    let input = viewDetail.owner_id.qProps
+    dm.get('/account/list', data, input, (rsp) => {
+        input.options = []
+        for (let x of rsp.data.records) {
+            input.options.push({ label: x.nick_name, value: x.id, caption: x.phone })
+        }
+    })
+
+}
 
 
 function getList(pagination) {
@@ -134,12 +168,13 @@ function getDetail(id) {
     dm.get('/org/detail', { id: id }, actPnl.value, (rsp) => {
         for (let kw in viewDetail) {
             viewDetail[kw].value = rsp.data[kw]
+            get_owner_options(rsp.data['phone'])
         }
     })
 
+
+    // 给管理员设置一个相关的信息
 }
-
-
 
 function btnClick(btnID, props = null) {
     let pnl = actPnl.value
@@ -176,11 +211,10 @@ function btnClick(btnID, props = null) {
                 case actRes.update.title:
                     data = {
                         id: pnl.data.id,
-                        phone: viewDetail.phone.value,
-                        acct: viewDetail.acct.value,
-                        nick_name: viewDetail.nick_name.value,
-                        real_name: viewDetail.real_name.value,
+                        name: viewDetail.name.value,
+                        owner_id: viewDetail.owner_id.value,
                         status: viewDetail.status.value,
+                        remark: viewDetail.remark.value,
                     }
                     break;
                 case actRes.delete.title:

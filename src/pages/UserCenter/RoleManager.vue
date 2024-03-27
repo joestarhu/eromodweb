@@ -20,11 +20,11 @@
                             </span>
                         </div>
                         <div v-if="actPnl.res.title === actRes.create.title">
-                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj" :dmType="obj.dmType"
+                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj.qProps" :dmType="obj.dmType"
                                 v-model="obj.value" />
                         </div>
                         <div v-if="actPnl.res.title === actRes.update.title">
-                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj" :dmType="obj.dmType"
+                            <dm_input v-for=" obj of viewDetail" :key="obj" :qProps="obj.qProps" :dmType="obj.dmType"
                                 v-model="obj.value" />
                         </div>
                     </div>
@@ -71,15 +71,15 @@ const actPnl = ref({
 
 
 const viewDetail = {
-    name: DMINPUT.required({ ...modelRole.name, rules: [val => val && val.length > 0 || t('msgRequired')] }),
-    status: DMINPUT.input({ ...modelRole.status, dmType: 'select', value: 1 }),
-    remark: DMINPUT.input({ ...modelRole.remark, type: "textarea" }),
+    name: DMINPUT.required({ ...modelRole.name, rules: [val => val && val.length > 0 || t('msgRequired')] }).value,
+    status: DMINPUT.select(modelRole.status, 1).value,
+    remark: DMINPUT.input({ ...modelRole.remark, type: "textarea" }).value,
 }
 
 
 const dmQueryInput = {
-    name: DMINPUT.query(modelRole.name),
-    status: DMINPUT.query({ ...modelRole.status, dmType: 'select' }),
+    name: DMINPUT.query(modelRole.name).value,
+    status: DMINPUT.querySelect(modelRole.status).value,
 }
 
 const dmHeaderBtn = [DMBTN.create]

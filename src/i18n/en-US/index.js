@@ -14,4 +14,5 @@ export default {
   account: "Account",
   password: "Password",
   msgRequired: 'Field is required',
+  msgNoData: 'No Data'
 }

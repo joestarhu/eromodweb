@@ -164,22 +164,31 @@ const DMBTN = {
     detail: { id: 7, label: '详情', color: 'primary' },
 }
 
+
 const DMINPUT = {
-    query: (params) => {
-        let base = { filled: false, debounce: 500, dense: true, clearable: true, style: 'width:300px;', outlined: true, dmType: 'query' }
-        return { ...base, ...params }
+    query: (qProps, value = null) => {
+        let params = { filled: false, debounce: 500, dense: true, clearable: true, style: 'width:300px;', outlined: true, ...qProps }
+        return ref({ dmType: 'query', qProps: params, value: value })
     },
-    input: (params) => {
-        let base = { filled: true, "lazy-rules": true, hint: '', dense: false }
-        return { ...base, ...params }
+    querySelect: (qProps, value = null) => {
+        let params = { filled: false, debounce: 500, dense: true, clearable: true, style: 'width:300px;', outlined: true, ...qProps }
+        return ref({ dmType: 'select', qProps: params, value: value })
     },
-    required: (params) => {
-        let base = { filled: true, "lazy-rules": true, hint: '', dense: false, dmType: 'required' }
-        return { ...base, ...params }
+    input: (qProps, value = null) => {
+        let params = { filled: true, "lazy-rules": true, hint: '', dense: false, ...qProps }
+        return ref({ dmType: 'text', qProps: params, value: value })
     },
-    select: (params) => {
-        let base = { filled: true, "lazy-rules": true, hint: '', dense: false, dmType: 'select' }
-        return { ...base, ...params }
+    required: (qProps, value = null) => {
+        let params = { filled: true, "lazy-rules": true, hint: '', dense: false, ...qProps }
+        return ref({ dmType: 'required', qProps: params, value: value })
+    },
+    select: (qProps, value = null) => {
+        let params = { filled: true, "lazy-rules": true, hint: '', dense: false, ...qProps }
+        return ref({ dmType: 'select', qProps: params, value: value })
+    },
+    selectFilter: (qProps, value = null) => {
+        let params = { filled: true, "lazy-rules": true, hint: '', dense: false, ...qProps }
+        return ref({ dmType: 'selectFilter', qProps: params, value: value })
     },
 }
 
